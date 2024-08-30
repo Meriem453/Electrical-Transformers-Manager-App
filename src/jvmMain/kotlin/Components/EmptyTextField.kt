@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun EmptyTextField(
     title:String,
+    limit:Int,
     onTextChanged:(String)->Unit,
     modifier: Modifier
 ){
@@ -25,13 +26,15 @@ fun EmptyTextField(
 Column {
     Text(title, fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
     TextField(text,{
-        text=it
-        onTextChanged(it)
+        if(text.length<limit){
+            text=it
+            onTextChanged(it)
+        }
     },modifier=modifier.clip(RoundedCornerShape(10.dp)).border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(10.dp)),
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.White,
             cursorColor = Color(0xff0073FF),
-            focusedIndicatorColor = Color(0xff0073FF))
+            focusedIndicatorColor = Color(0xff0073FF)),
         )
 }
 }

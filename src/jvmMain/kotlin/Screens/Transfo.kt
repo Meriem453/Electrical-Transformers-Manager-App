@@ -217,11 +217,13 @@ list.forEachIndexed{position,item->
                Row (modifier = Modifier.fillMaxWidth().padding(top = 20.dp)){
                     EmptyTextField(
                         "Marque",
+                        10,
                         {},
                         Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
                     )
                    EmptyTextField(
                        "N° série",
+                       25,
                        {},
                        Modifier.fillMaxWidth()
                    )
@@ -229,16 +231,19 @@ list.forEachIndexed{position,item->
                Row (modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
                    EmptyTextField(
                        "Tension",
+                       10,
                        {},
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Puissance",
+                       10,
                        {},
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Année de fabrication",
+                       4,
                        {},
                        Modifier
                    )
@@ -246,6 +251,7 @@ list.forEachIndexed{position,item->
                    Spacer(modifier = Modifier.height(20.dp))
                        EmptyTextField(
                            "Fournisseur",
+                           30,
                            {},
                            Modifier.fillMaxWidth()
                        )
