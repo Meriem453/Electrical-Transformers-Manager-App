@@ -1,7 +1,9 @@
 package Components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -9,8 +11,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +30,7 @@ fun FileSection(
     var text by remember { mutableStateOf("") }
     Column(modifier = modifier) {
         Text(title, fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             TextField(text,
                 onValueChange = {},
                 modifier = Modifier.clip(RoundedCornerShape(10.dp))
@@ -46,12 +50,17 @@ fun FileSection(
                         Icon(painterResource("icons/mark.svg"), "", tint = Color.Green)
                 }
             )
-            Button(
-                "icons/insert_photo.svg",
-                "Parcourir",
-                Color.White,
-                Color(0xff0073FF)
-            ) { text = "2003" }
+            Row (verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .padding(horizontal = 5.dp)
+                    .shadow(2.dp, RoundedCornerShape(10.dp))
+                    .background(Color(0xff0073FF))
+                    .clickable { text="2003" }
+            ){
+                Text("Parcourir", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.White, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
+                Icon(painter = painterResource("icons/insert_photo.svg"),"", tint = Color.White,modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
+            }
         }
     }
 }

@@ -16,10 +16,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 
 val transfo= listOf(
@@ -188,22 +192,31 @@ list.forEachIndexed{position,item->
         Window(onCloseRequest = {
             window.isEnabled=true
             editTransfo=false},
-            resizable = false){
+            resizable = false,
+            state = rememberWindowState(
+                position = WindowPosition(500.dp,200.dp),
+                size = DpSize(1000.dp,700.dp)
+            ),icon = painterResource("images/sonelgaz.png"), title = "Modifier un transformateur"
+            ){
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                var scrollState = rememberScrollState()
            Column(
                modifier = Modifier
-                   .fillMaxSize()
-                   .background(Color(0xffF8F8F8))
                    .padding(20.dp)
+                   .verticalScroll(scrollState)
            ) {
-               Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()){
+               Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                    Text("Modifier un transformateur", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
-                   Box (contentAlignment = Alignment.Center,
+                   Box(contentAlignment = Alignment.Center,
                        modifier = Modifier
                            .clip(RoundedCornerShape(20.dp))
                            .padding(horizontal = 5.dp)
-                           .shadow(2.dp,RoundedCornerShape(20.dp))
+                           .shadow(2.dp, RoundedCornerShape(20.dp))
                            .background(Color(0xff0073FF))
-                           .clickable { editTransfo=true }
+                           .clickable { editTransfo = true }
                    ) {
                        Text(
                            "Sauvgarder",
@@ -214,13 +227,13 @@ list.forEachIndexed{position,item->
                        )
                    }
                }
-               Row (modifier = Modifier.fillMaxWidth().padding(top = 20.dp)){
-                    EmptyTextField(
-                        "Marque",
-                        10,
-                        {},
-                        Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
-                    )
+               Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+                   EmptyTextField(
+                       "Marque",
+                       10,
+                       {},
+                       Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
+                   )
                    EmptyTextField(
                        "N° série",
                        25,
@@ -228,7 +241,7 @@ list.forEachIndexed{position,item->
                        Modifier.fillMaxWidth()
                    )
                }
-               Row (modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+               Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
                    EmptyTextField(
                        "Tension",
                        10,
@@ -248,32 +261,33 @@ list.forEachIndexed{position,item->
                        Modifier
                    )
                }
-                   Spacer(modifier = Modifier.height(20.dp))
-                       EmptyTextField(
-                           "Fournisseur",
-                           30,
-                           {},
-                           Modifier.fillMaxWidth()
-                       )
-                   Spacer(modifier = Modifier.height(20.dp))
-                   FileSection(
-                       "Fiche garantie",
-                       {},
-                       Modifier.fillMaxWidth()
-                   )
-                   Spacer(modifier = Modifier.height(20.dp))
-                   FileSection(
-                       "Rapport PV",
-                       {},
-                       Modifier.fillMaxWidth()
-                   )
-                   Spacer(modifier = Modifier.height(20.dp))
-                   FileSection(
-                       "Plaque signalitique",
-                       {},
-                       Modifier.fillMaxWidth()
-                   )
-
+               Spacer(modifier = Modifier.height(20.dp))
+               EmptyTextField(
+                   "Fournisseur",
+                   30,
+                   {},
+                   Modifier.fillMaxWidth()
+               )
+               Spacer(modifier = Modifier.height(20.dp))
+               FileSection(
+                   "Fiche garantie",
+                   {},
+                   Modifier.fillMaxWidth()
+               )
+               Spacer(modifier = Modifier.height(20.dp))
+               FileSection(
+                   "Rapport PV",
+                   {},
+                   Modifier.fillMaxWidth()
+               )
+               Spacer(modifier = Modifier.height(20.dp))
+               FileSection(
+                   "Plaque signalitique",
+                   {},
+                   Modifier.fillMaxWidth()
+               )
+           }
+                VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
            }
         }
     }
