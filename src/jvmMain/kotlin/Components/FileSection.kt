@@ -24,10 +24,11 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun FileSection(
     title:String,
+    initText:String,
     onButtonClicked:()->Unit,
     modifier: Modifier
 ){
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(initText) }
     Column(modifier = modifier) {
         Text(title, fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
         Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {

@@ -52,6 +52,8 @@ val transfo= listOf(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Transfo(window: ComposeWindow) {
+    var filterTransfo by remember { mutableStateOf(false) }
+    var addTransfo by remember { mutableStateOf(false) }
     var editTransfo by remember { mutableStateOf(false) }
     var currentTransfo: Transformateur? by remember { mutableStateOf(null) }
 
@@ -77,16 +79,20 @@ Column (modifier = Modifier.fillMaxSize()){
             icon = "icons/Group.svg",
             text = "Filtrer",
             tintColor = Color(0xff0073FF),
-            background = Color.White,
-            {}
-        )
+            background = Color.White
+        ) {
+            filterTransfo = true
+            window.isEnabled = false
+        }
         Button(
             icon = "icons/add.svg",
             text = "Nouveau",
             tintColor = Color.White,
-            background = Color(0xff0073FF),
-            {}
-        )
+            background = Color(0xff0073FF)
+        ) {
+            addTransfo = true
+            window.isEnabled = false
+        }
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(10.dp)) {
     var checkedItem by remember {
@@ -200,7 +206,7 @@ list.forEachIndexed{position,item->
             ){
             Box(
                 modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
-                contentAlignment = Alignment.CenterEnd
+                contentAlignment = Alignment.TopEnd
             ) {
                 var scrollState = rememberScrollState()
            Column(
@@ -212,7 +218,7 @@ list.forEachIndexed{position,item->
                    Text("Modifier un transformateur", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
                    Box(contentAlignment = Alignment.Center,
                        modifier = Modifier
-                           .clip(RoundedCornerShape(20.dp))
+                           .clip(RoundedCornerShape(10.dp))
                            .padding(horizontal = 5.dp)
                            .shadow(2.dp, RoundedCornerShape(20.dp))
                            .background(Color(0xff0073FF))
@@ -230,12 +236,14 @@ list.forEachIndexed{position,item->
                Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
                    EmptyTextField(
                        "Marque",
+                       currentTransfo!!.marque,
                        10,
                        {},
                        Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "N° série",
+                       currentTransfo!!.n_serie,
                        25,
                        {},
                        Modifier.fillMaxWidth()
@@ -244,18 +252,21 @@ list.forEachIndexed{position,item->
                Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
                    EmptyTextField(
                        "Tension",
+                       currentTransfo!!.tension,
                        10,
                        {},
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Puissance",
+                       currentTransfo!!.puissance,
                        10,
                        {},
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Année de fabrication",
+                       currentTransfo!!.a_fabrication,
                        4,
                        {},
                        Modifier
@@ -264,6 +275,7 @@ list.forEachIndexed{position,item->
                Spacer(modifier = Modifier.height(20.dp))
                EmptyTextField(
                    "Fournisseur",
+                   currentTransfo!!.fournisseur,
                    30,
                    {},
                    Modifier.fillMaxWidth()
@@ -271,26 +283,256 @@ list.forEachIndexed{position,item->
                Spacer(modifier = Modifier.height(20.dp))
                FileSection(
                    "Fiche garantie",
+                   currentTransfo!!.fiche_garantie,
                    {},
                    Modifier.fillMaxWidth()
                )
                Spacer(modifier = Modifier.height(20.dp))
                FileSection(
                    "Rapport PV",
+                   currentTransfo!!.pv_d_essaie,
                    {},
                    Modifier.fillMaxWidth()
                )
                Spacer(modifier = Modifier.height(20.dp))
                FileSection(
                    "Plaque signalitique",
+                   currentTransfo!!.plaque_signalitique,
                    {},
                    Modifier.fillMaxWidth()
                )
+               Spacer(modifier = Modifier.height(50.dp))
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd){
+                    Box(contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .padding(horizontal = 5.dp)
+                            .shadow(2.dp, RoundedCornerShape(10.dp))
+                            .background(Color(0xff0073FF))
+                            .clickable { editTransfo = true }
+                    ) {
+                        Text(
+                            "Historique des mouvements",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
+                        )
+                    }
+                }
            }
                 VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
            }
         }
     }
-}
+    if(addTransfo){
+        Window(onCloseRequest = {
+            window.isEnabled=true
+            addTransfo=false},
+            resizable = false,
+            state = rememberWindowState(
+                position = WindowPosition(500.dp,200.dp),
+                size = DpSize(1000.dp,700.dp)
+            ),icon = painterResource("images/sonelgaz.png"), title = "Créer un transformateur"
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                var scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .verticalScroll(scrollState)
+                ) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Text("Créer un transformateur", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        Box(contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .padding(horizontal = 5.dp)
+                                .shadow(2.dp, RoundedCornerShape(20.dp))
+                                .background(Color(0xff0073FF))
+                                .clickable { editTransfo = true }
+                        ) {
+                            Text(
+                                "Créer",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                            )
+                        }
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+                        EmptyTextField(
+                            "Marque",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
+                        )
+                        EmptyTextField(
+                            "N° série",
+                            "",
+                            25,
+                            {},
+                            Modifier.fillMaxWidth()
+                        )
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+                        EmptyTextField(
+                            "Tension",
+                            "",
+                            10,
+                            {},
+                            Modifier.padding(end = 10.dp)
+                        )
+                        EmptyTextField(
+                            "Puissance",
+                            "",
+                            10,
+                            {},
+                            Modifier.padding(end = 10.dp)
+                        )
+                        EmptyTextField(
+                            "Année de fabrication",
+                            "",
+                            4,
+                            {},
+                            Modifier
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    EmptyTextField(
+                        "Fournisseur",
+                       "",
+                        30,
+                        {},
+                        Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    FileSection(
+                        "Fiche garantie",
+                        "",
+                        {},
+                        Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    FileSection(
+                        "Rapport PV",
+                        "",
+                        {},
+                        Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    FileSection(
+                        "Plaque signalitique",
+                        "",
+                        {},
+                        Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(50.dp))
+                }
+                VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
+            }
+        }
+            }
+    if(filterTransfo){
+        Window(onCloseRequest = {
+            window.isEnabled=true
+            filterTransfo=false},
+            resizable = false,
+            state = rememberWindowState(
+                position = WindowPosition(500.dp,200.dp),
+                size = DpSize(1000.dp,500.dp)
+            ),icon = painterResource("images/sonelgaz.png"), title = "Filtrer les transformateurs"
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                var scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .verticalScroll(scrollState)
+                ) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Text("Filtrer les transformateurs", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        Box(contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .padding(horizontal = 5.dp)
+                                .shadow(2.dp, RoundedCornerShape(20.dp))
+                                .background(Color(0xff0073FF))
+                                .clickable { editTransfo = true }
+                        ) {
+                            Text(
+                                "Filtrer",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                            )
+                        }
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+                        EmptyTextField(
+                            "Marque",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
+                        )
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                        EmptyTextField(
+                            "Tension",
+                            "",
+                            10,
+                            {},
+                            Modifier.padding(end = 10.dp)
+                        )
+                        EmptyTextField(
+                            "Puissance",
+                            "",
+                            10,
+                            {},
+                            Modifier.padding(end = 10.dp)
+                        )
+                        EmptyTextField(
+                            "Année de fabrication",
+                            "",
+                            4,
+                            {},
+                            Modifier
+                        )
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)){
+                        DropDown(
+                            listOf("El-Harrach","Rouiba"),
+                            "District",
+                            {},
+                            true,
+                            Modifier.padding(top = 28.dp)
+                        )
+                        EmptyTextField(
+                            "Poste",
+                            "",
+                            10,
+                            {},
+                            Modifier.padding(start = 10.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(50.dp))
+                }
+                VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
+            }
+        }
+    }
+    }
+
 
 

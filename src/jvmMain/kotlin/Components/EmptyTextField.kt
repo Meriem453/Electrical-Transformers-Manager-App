@@ -18,11 +18,12 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun EmptyTextField(
     title:String,
+    initText:String,
     limit:Int,
     onTextChanged:(String)->Unit,
     modifier: Modifier
 ){
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(initText) }
 Column {
     Text(title, fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
     TextField(text,{
