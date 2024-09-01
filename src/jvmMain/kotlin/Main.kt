@@ -116,7 +116,7 @@ fun App(window: ComposeWindow) {
                     when (selectedItem) {
                         0 -> Transfo(window)
                         1 -> Reforme()
-                        2 -> Mouvements()
+                        2 -> Mouvements(window)
                         3 -> Districts()
                         4 -> Postes()
                     }
