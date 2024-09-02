@@ -15,6 +15,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,7 +33,7 @@ fun DropDown(districts:List<String>,Label:String,selected:(item:Int)->Unit,enabl
         Icons.Filled.KeyboardArrowDown
 
     Column(modifier) {
-
+        Text(Label, fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
         TextField(
             value = mSelectedText,
             onValueChange = { mSelectedText = it },
@@ -41,15 +42,6 @@ fun DropDown(districts:List<String>,Label:String,selected:(item:Int)->Unit,enabl
                     mTextFieldSize = coordinates.size.toSize()
                 },
             readOnly = true,
-            label = {
-                Text(
-                    text = Label ,
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black,
-                )
-
-            },
             trailingIcon = {
                 Icon(icon,"contentDescription", modifier = Modifier.clickable { mExpanded = !mExpanded })},
             colors = TextFieldDefaults.textFieldColors(
