@@ -758,6 +758,571 @@ if(findTransfo){
                 }
             }
         }
+
+        if(filterMvt){
+            Window(onCloseRequest = {
+                window.isEnabled=true
+                filterMvt=false},
+                resizable = false,
+                state = rememberWindowState(
+                    position = WindowPosition(500.dp,200.dp),
+                    size = DpSize(1000.dp,500.dp)
+                ),icon = painterResource("images/sonelgaz.png"), title = "Filtrer les mouvements"
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    var scrollState = rememberScrollState()
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(scrollState)
+                    ) {
+                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                            Text("Filtrer les mouvements", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                            Box(contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .padding(horizontal = 5.dp)
+                                    .shadow(2.dp, RoundedCornerShape(20.dp))
+                                    .background(Color(0xff0073FF))
+                                    .clickable { filterMvt = false }
+                            ) {
+                                Text(
+                                    "Filtrer",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                                )
+                            }
+                        }
+                        Row(modifier = Modifier.fillMaxWidth().padding(top = 30.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                            EmptyTextField(
+                                "N° du bon",
+                                "",
+                                10,
+                                {},
+                                Modifier.fillMaxWidth(.3f)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Date du mvt",
+                                "",
+                                10,
+                                {},
+                                Modifier.fillMaxWidth(.5f)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Date de saisie",
+                                "",
+                                10,
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+                        Row(modifier = Modifier.fillMaxWidth().padding(top = 30.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                            DropDown(
+                                listOf(
+                                    "Avarie",
+                                    "Augment puissance",
+                                    "Dimunit puissance",
+                                    "Stock de sécurité",
+                                    "Désaffection poste",
+                                    "Entretien Préventif",
+                                    "Cession par client",
+                                    "Location pour client",
+                                    "Poste noeuf",
+                                    "Changement de tension",
+                                    "Permutation",
+                                    "Poste remplacé",
+                                    "Vente",
+                                    "Transfert inter DD",
+                                    "Transfert DD vers GDC"
+                                ),
+                                "Motif",
+                                {},
+                                true,
+                                Modifier.fillMaxWidth(.3f)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "N° série du transfo",
+                                "",
+                                10,
+                                {},
+                                Modifier.fillMaxWidth(.5f)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Marque du transfo",
+                                "",
+                                4,
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+                        Row(modifier = Modifier.fillMaxWidth().padding(top = 30.dp)){
+                            DropDown(
+                                listOf("Exploitation","Stock","Platform DD","Platform GDC","Autre"),
+                                "Destination",
+                                {},
+                                true,
+                                Modifier.fillMaxWidth(.5f)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Poste",
+                                "",
+                                10,
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+                        Row(modifier = Modifier.fillMaxWidth().padding(top = 30.dp)){
+                            EmptyTextField(
+                                "Date du bon de mvt",
+                                "",
+                                10,
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Text("Interval", fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = Theme.MAIN_BLUE)
+                        Row(modifier = Modifier.fillMaxWidth().padding(top = 30.dp)){
+                            EmptyTextField(
+                                "Date du début",
+                                "",
+                                10,
+                                {},
+                                Modifier
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Date du fin",
+                                "",
+                                10,
+                                {},
+                                Modifier
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(50.dp))
+                    }
+                    VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
+                }
+            }
+        }
+
+        if(mvtDetails){
+            Window(onCloseRequest = {
+                currentMvt=null
+                mvtDetails=true
+            },
+                resizable = false,
+                state = rememberWindowState(
+                    position = WindowPosition(250.dp,0.dp),
+                    size = DpSize(1250.dp,700.dp)
+                ),icon = painterResource("images/sonelgaz.png"), title = "Modifier un bon de mouvement"
+            ) {
+                var destPlat by remember { mutableStateOf(false) }
+                var destExploi by remember { mutableStateOf(false) }
+                var destAutre by remember { mutableStateOf(false) }
+                var motifAvar by remember { mutableStateOf(false) }
+                var motifEntr by remember { mutableStateOf(false) }
+                var motifTransfertInterDD by remember { mutableStateOf(false) }
+                var motifTransfertDDversGDC by remember { mutableStateOf(false) }
+                var motifVente by remember { mutableStateOf(false) }
+
+                val verticalScroll = rememberScrollState()
+
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Theme.BACKGROUND)
+                            .padding(20.dp)
+                            .verticalScroll(verticalScroll)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                "Modifier un bon de mouvement",
+                                fontSize = 26.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Box(contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .padding(horizontal = 5.dp)
+                                    .shadow(2.dp, RoundedCornerShape(20.dp))
+                                    .background(Color(0xff0073FF))
+                                    .clickable {
+                                     mvtDetails=false
+                                    }
+                            ) {
+                                Text(
+                                    "Valider",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(50.dp))
+                        Text(
+                            "Transfo: ${currentMvt!!.n_serie_transfo} Marque:${currentMvt!!.marque} Provenance:",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp,
+                            color = Theme.MAIN_BLUE,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(50.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            DropDown(
+                                listOf("El Harrach", "Rouiba"),
+                                "Emetteur (District)",
+                                {},
+                                true,
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "N° du bon de mvt",
+                                currentMvt!!.n_bon,
+                                10,
+                                {},
+                                Modifier
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Date du bon de mvt",
+                                "",
+                                10,
+                                {},
+                                Modifier
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Date de mvt",
+                                currentMvt!!.date_mvt,
+                                10,
+                                {},
+                                Modifier
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            DropDown(
+                                listOf(
+                                    "Avarie",
+                                    "Augment puissance",
+                                    "Dimunit puissance",
+                                    "Stock de sécurité",
+                                    "Désaffection poste",
+                                    "Entretien Préventif",
+                                    "Cession par client",
+                                    "Location pour client",
+                                    "Poste noeuf",
+                                    "Changement de tension",
+                                    "Permutation",
+                                    "Poste remplacé",
+                                    "Vente",
+                                    "Transfert inter DD",
+                                    "Transfert DD vers GDC"
+                                ),
+                                "Motif",
+                                {
+                                    when (it) {
+                                        0 -> {
+                                            motifAvar = true
+                                            motifEntr = false
+                                            motifVente = false
+                                            motifTransfertInterDD = false
+                                            motifTransfertDDversGDC = false
+                                        }
+
+                                        5 -> {
+                                            motifAvar = false
+                                            motifEntr = true
+                                            motifVente = false
+                                            motifTransfertInterDD = false
+                                            motifTransfertDDversGDC = false
+                                        }
+
+                                        12 -> {
+                                            motifAvar = false
+                                            motifEntr = false
+                                            motifVente = true
+                                            motifTransfertInterDD = false
+                                            motifTransfertDDversGDC = false
+                                        }
+
+                                        13 -> {
+                                            motifAvar = false
+                                            motifEntr = false
+                                            motifVente = false
+                                            motifTransfertInterDD = true
+                                            motifTransfertDDversGDC = false
+                                        }
+
+                                        14 -> {
+                                            motifAvar = false
+                                            motifEntr = false
+                                            motifVente = false
+                                            motifTransfertInterDD = false
+                                            motifTransfertDDversGDC = true
+                                        }
+
+                                        else -> {
+                                            motifAvar = false
+                                            motifEntr = false
+                                            motifVente = false
+                                            motifTransfertInterDD = false
+                                            motifTransfertDDversGDC = false
+                                        }
+                                    }
+                                },
+                                true,
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Column {
+                                DropDown(
+                                    listOf("Stock", "Exploitation", "Platform DD", "Platform GDC", "Autre"),
+                                    "Destination",
+                                    {
+                                        when (it) {
+                                            1 -> {
+                                                destAutre = false
+                                                destExploi = true
+                                                destPlat = false
+                                            }
+
+                                            3 -> {
+                                                destAutre = false
+                                                destExploi = false
+                                                destPlat = true
+                                            }
+
+                                            4 -> {
+                                                destAutre = true
+                                                destExploi = false
+                                                destPlat = false
+                                            }
+
+                                            else -> {
+                                                destAutre = false
+                                                destExploi = false
+                                                destPlat = false
+                                            }
+                                        }
+                                    },
+                                    true,
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                DropDown(
+                                    listOf(),
+                                    "Préciser",
+                                    {},
+                                    destAutre,
+                                )
+                            }
+                            if (destPlat) {
+                                Spacer(modifier = Modifier.width(20.dp))
+                                EmptyTextField(
+                                    "Date d'entrée",
+                                    "",
+                                    10,
+                                    {},
+                                    Modifier
+                                )
+                            }
+                        }
+
+                        if (destExploi) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                DropDown(
+                                    listOf("1024", "2543", "52136", "522148"),
+                                    "N° poste",
+                                    {},
+                                    true,
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                EmptyTextField(
+                                    "Nature",
+                                    "",
+                                    10,
+                                    {},
+                                    Modifier
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                EmptyTextField(
+                                    "Designation",
+                                    "",
+                                    25,
+                                    {},
+                                    Modifier
+                                )
+                            }
+                        }
+                        if (motifAvar) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                DropDown(
+                                    listOf(
+                                        "Acte Malveillance",
+                                        "Court circuit",
+                                        "Court circuit disjinct BT",
+                                        "Court circuit fermé par tiers",
+                                        "Court circuit interne",
+                                        "Court circuit MT",
+                                        "Court circuit BT",
+                                        "Désiquilibre",
+                                        "Foudre",
+                                        "Fuite d'huile",
+                                        "Incendie",
+                                        "Inconnue",
+                                        "Mauvaise terre",
+                                        "Poupée BT coupé",
+                                        "Surcharge",
+                                        "Tableau BT brulé",
+                                        "Défaut de réparation",
+                                        "Sinistre"
+                                    ),
+                                    "Cause d'avarie",
+                                    {},
+                                    true,
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                EmptyTextField(
+                                    "Date d'avarie",
+                                    "",
+                                    10,
+                                    {},
+                                    Modifier
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                FileSection(
+                                    "Fiche d'avarie",
+                                    "",
+                                    {},
+                                    Modifier
+                                )
+                            }
+                        }
+                        if (motifEntr) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                DropDown(
+                                    listOf(),
+                                    "Cause d'avarie",
+                                    {},
+                                    true,
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                EmptyTextField(
+                                    "Date d'avarie",
+                                    "",
+                                    10,
+                                    {},
+                                    Modifier
+                                )
+                            }
+                        }
+                        if (motifTransfertInterDD) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            FileSection(
+                                "Bon de transfert",
+                                "",
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+                        if (motifTransfertDDversGDC) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            FileSection(
+                                "Bon de commande",
+                                "",
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+                        if (motifVente) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            FileSection(
+                                "PV CPR",
+                                "",
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(30.dp))
+                            FileSection(
+                                "Résolution du vente",
+                                "",
+                                {},
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(50.dp))
+                        FileSection(
+                            "Bon du mouvement",
+                            "",
+                            {},
+                            Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(50.dp))
+                        var observation by remember { mutableStateOf("") }
+                        Column {
+                            Text(
+                                "Observation",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(bottom = 10.dp)
+                            )
+                            TextField(
+                                observation,
+                                maxLines = 4,
+                                onValueChange = {
+                                    if (observation.length < 200) {
+                                        observation = it
+                                    }
+                                },
+                                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp))
+                                    .border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(10.dp)),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    backgroundColor = Color.White,
+                                    cursorColor = Color(0xff0073FF),
+                                    focusedIndicatorColor = Color(0xff0073FF)
+                                ),
+                            )
+                        }
+                    }
+                    VerticalScrollbar(rememberScrollbarAdapter(verticalScroll))
+                }
+            }
+        }
                     }
     }
 
