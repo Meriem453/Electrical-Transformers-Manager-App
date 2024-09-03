@@ -1,6 +1,8 @@
 package Screens
 
 import Components.Button
+import Components.DropDown
+import Components.EmptyTextField
 import Components.SearchBar
 import Models.District
 import androidx.compose.foundation.*
@@ -11,13 +13,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.rememberWindowState
 
 val dist= listOf(
     District("El Harrach","Rouiba","EHR","55","552")
@@ -25,7 +34,10 @@ val dist= listOf(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Districts(){
+fun Districts(window: ComposeWindow) {
+
+    var addDistrict by remember { mutableStateOf(false) }
+
     Column (modifier = Modifier.fillMaxSize()){
         var search by remember {
             mutableStateOf("")
@@ -42,7 +54,7 @@ fun Districts(){
                 text = "Nouveau",
                 tintColor = Color.White,
                 background = Color(0xff0073FF),
-                {}
+                {addDistrict=true}
             )
         }
         val horizontal_state= rememberScrollState()
@@ -102,5 +114,97 @@ fun Districts(){
         }
         HorizontalScrollbar(rememberScrollbarAdapter(horizontal_state))
     }
+    if(addDistrict){
+        Window(onCloseRequest = {
+            window.isEnabled=true
+            addDistrict=false},
+            resizable = false,
+            state = rememberWindowState(
+                position = WindowPosition(500.dp,200.dp),
+                size = DpSize(1000.dp,500.dp)
+            ),icon = painterResource("images/sonelgaz.png"), title = "Ajouter une district"
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                var scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .verticalScroll(scrollState)
+                ) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Text("Ajouter une district", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        Box(contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .padding(horizontal = 5.dp)
+                                .shadow(2.dp, RoundedCornerShape(20.dp))
+                                .background(Color(0xff0073FF))
+                                .clickable { addDistrict = false }
+                        ) {
+                            Text(
+                                "Créer",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        EmptyTextField(
+                            "District",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth(.3f)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        EmptyTextField(
+                            "Centre",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth(.5f)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        EmptyTextField(
+                            "Init",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth()
+                        )
+                    }
 
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
+                    ) {
+                        EmptyTextField(
+                            "Code district",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth(.3f)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        EmptyTextField(
+                            "Code centre",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth(.5f)
+                        )
+
+                    }
+                }
+                    VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
+            }
+        }
+    }
 }

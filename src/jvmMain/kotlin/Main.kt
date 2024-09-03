@@ -19,7 +19,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
@@ -118,8 +117,8 @@ fun App(window: ComposeWindow) {
                         0 -> Transfo(window)
                         1 -> Reforme()
                         2 -> Mouvements(window)
-                        3 -> Districts()
-                        4 -> Postes()
+                        3 -> Districts(window)
+                        4 -> Postes(window)
                     }
                 }
             }
@@ -129,7 +128,7 @@ fun App(window: ComposeWindow) {
 
 fun main() = application {
     val state = rememberWindowState()
-    Window(onCloseRequest = ::exitApplication, icon = painterResource("images/sonelgaz.png"), title = "Sonelgaz", state = state, resizable = false,) {
+    Window(onCloseRequest = ::exitApplication, icon = painterResource("images/sonelgaz.png"), title = "Sonelgaz", state = state,) {
 
         App(window)
     }

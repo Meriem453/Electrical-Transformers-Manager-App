@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -36,7 +37,7 @@ val postes= listOf(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Postes(){
+fun Postes(window: ComposeWindow) {
     Column (modifier = Modifier.fillMaxSize()){
         var search by remember {
             mutableStateOf("")
