@@ -2,6 +2,7 @@ package Screens
 
 import Components.Button
 import Components.DropDown
+import Components.EmptyTextField
 import Components.SearchBar
 import Models.Poste
 import androidx.compose.foundation.*
@@ -17,12 +18,18 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.rememberWindowState
 
 val postes= listOf(
     Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
@@ -38,6 +45,9 @@ val postes= listOf(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Postes(window: ComposeWindow) {
+
+    var addPoste by remember { mutableStateOf(false) }
+
     Column (modifier = Modifier.fillMaxSize()){
         var search by remember {
             mutableStateOf("")
@@ -67,7 +77,7 @@ fun Postes(window: ComposeWindow) {
                 text = "Nouveau",
                 tintColor = Color.White,
                 background = Color(0xff0073FF),
-                {}
+                {addPoste=true}
             )
         }
         val horizontal_state= rememberScrollState()
@@ -130,4 +140,90 @@ fun Postes(window: ComposeWindow) {
         }
         HorizontalScrollbar(rememberScrollbarAdapter(horizontal_state))
     }
+
+    if(addPoste){
+        Window(onCloseRequest = {
+            window.isEnabled=true
+            addPoste=false},
+            resizable = false,
+            state = rememberWindowState(
+                position = WindowPosition(500.dp,200.dp),
+                size = DpSize(1000.dp,500.dp)
+            ),icon = painterResource("images/sonelgaz.png"), title = "Ajouter un poste"
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                var scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .verticalScroll(scrollState)
+                ) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Text("Ajouter un poste", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        Box(contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .padding(horizontal = 5.dp)
+                                .shadow(2.dp, RoundedCornerShape(20.dp))
+                                .background(Color(0xff0073FF))
+                                .clickable { addPoste = false }
+                        ) {
+                            Text(
+                                "Créer",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DropDown(
+                            listOf("El Harrach","Rouiba"),
+                            "District",
+                            {},
+                            true,
+                            Modifier.fillMaxWidth(.3f)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        EmptyTextField(
+                            "Numero",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth(.5f)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        DropDown(
+                            listOf("NP"),
+                            "Nature",
+                            {},
+                            true,
+                            Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
+                    ) {
+                        EmptyTextField(
+                            "Désignation",
+                            "",
+                            10,
+                            {},
+                            Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+                VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
+            }
+        }
+    }
+
 }
