@@ -37,6 +37,7 @@ val items= listOf(
     Item("Mouvements","icons/compare_arrows.svg",""),
     Item("Districts","icons/account_balance.svg",""),
     Item("Postes","icons/charging_station.svg",""),
+    Item("Comptes","icons/people_alt.svg",""),
 
 )
 @Composable
@@ -119,6 +120,7 @@ fun App(window: ComposeWindow) {
                         2 -> Mouvements(window)
                         3 -> Districts(window)
                         4 -> Postes(window)
+                        5 -> Comptes(window)
                     }
                 }
             }
