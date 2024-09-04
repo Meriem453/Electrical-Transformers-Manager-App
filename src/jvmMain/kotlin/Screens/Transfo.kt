@@ -94,7 +94,7 @@ Column (modifier = Modifier.fillMaxSize()){
             window.isEnabled = false
         }
     }
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(10.dp)) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
     var checkedItem by remember {
         mutableStateOf(0)
     }

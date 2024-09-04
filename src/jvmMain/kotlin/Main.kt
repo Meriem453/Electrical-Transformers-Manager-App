@@ -42,7 +42,7 @@ val items= listOf(
 )
 @Composable
 @Preview
-fun App(window: ComposeWindow) {
+fun App(window: ComposeWindow,Logout:()->Unit) {
     Row(modifier = Modifier.background(Color(0xffF9F9F9))) {
         var selectedItem by remember {
             mutableStateOf(0)
@@ -107,7 +107,7 @@ fun App(window: ComposeWindow) {
                             Text("Role", fontSize = 14.sp, color = Color.Gray)
                         }
 
-                        Row (modifier = Modifier.padding(30.dp).clip(RoundedCornerShape(20.dp)).clickable {  }, verticalAlignment = Alignment.CenterVertically){
+                        Row (modifier = Modifier.padding(30.dp).clip(RoundedCornerShape(20.dp)).clickable { Logout() }, verticalAlignment = Alignment.CenterVertically){
                             Icon(painterResource("icons/login.svg"),"", tint = Color.Gray, modifier = Modifier.padding(20.dp))
                             Text("Deconnexion", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.Gray,modifier = Modifier.padding(end = 20.dp))
                         }
@@ -129,9 +129,10 @@ fun App(window: ComposeWindow) {
 }
 
 fun main() = application {
+    var loggedIn by remember { mutableStateOf(false) }
     val state = rememberWindowState()
     Window(onCloseRequest = ::exitApplication, icon = painterResource("images/sonelgaz.png"), title = "Sonelgaz", state = state,) {
-
-        App(window)
+        if(loggedIn) App(window){loggedIn=false}
+        else Login(window) { loggedIn = true }
     }
 }
