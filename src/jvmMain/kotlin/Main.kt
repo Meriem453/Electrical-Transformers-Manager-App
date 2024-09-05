@@ -114,10 +114,14 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                     }
                 }
                 Box(modifier = Modifier.fillMaxSize().padding(top = 20.dp)) {
+                    var transfoHistory by remember{mutableStateOf("")}
                     when (selectedItem) {
-                        0 -> Transfo(window)
+                        0 -> Transfo(window){
+                            transfoHistory=it
+                            selectedItem=2
+                        }
                         1 -> Reforme()
-                        2 -> Mouvements(window)
+                        2 -> Mouvements(window,transfoHistory)
                         3 -> Districts(window)
                         4 -> Postes(window)
                         5 -> Comptes(window)

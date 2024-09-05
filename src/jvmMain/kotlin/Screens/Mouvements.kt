@@ -46,10 +46,10 @@ val list= listOf(
 )
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun Mouvements(window: ComposeWindow,transfo:Int?=null) {
+fun Mouvements(window: ComposeWindow,transfo:String) {
     Column (modifier = Modifier.fillMaxSize()){
         var search by remember {
-            mutableStateOf("")
+            mutableStateOf(transfo)
         }
         var findTransfo by remember { mutableStateOf(false) }
         var addMvt by remember { mutableStateOf(false) }

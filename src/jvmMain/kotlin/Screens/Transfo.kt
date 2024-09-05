@@ -51,7 +51,7 @@ val transfo= listOf(
 )
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Transfo(window: ComposeWindow) {
+fun Transfo(window: ComposeWindow,transfoHistory:(n_serie:String)->Unit) {
     var filterTransfo by remember { mutableStateOf(false) }
     var addTransfo by remember { mutableStateOf(false) }
     var editTransfo by remember { mutableStateOf(false) }
@@ -103,22 +103,28 @@ CheckGrp(
     onChecked = {checkedItem=0},
     "Exploitation"
 )
+        Spacer(modifier = Modifier.width(20.dp))
         DropDown(
             listOf("El-Harrach","Rouiba"),
             "District",
             {},
             checkedItem==0
         )
+        Spacer(modifier = Modifier.width(20.dp))
+
         CheckGrp(
             isChecked = checkedItem==1,
             onChecked = {checkedItem=1},
-            "Stock"
-        )
+            "Stock")
+        Spacer(modifier = Modifier.width(20.dp))
+
         CheckGrp(
             isChecked = checkedItem==2,
             onChecked = {checkedItem=2},
             "Platform DD"
         )
+        Spacer(modifier = Modifier.width(20.dp))
+
         CheckGrp(
             isChecked = checkedItem==3,
             onChecked = {checkedItem=3},
@@ -222,7 +228,11 @@ list.forEachIndexed{position,item->
                            .padding(horizontal = 5.dp)
                            .shadow(2.dp, RoundedCornerShape(20.dp))
                            .background(Color(0xff0073FF))
-                           .clickable { editTransfo = true }
+                           .clickable {
+                               currentTransfo=null
+                               window.isEnabled=true
+                               editTransfo=false
+                           }
                    ) {
                        Text(
                            "Sauvgarder",
@@ -236,14 +246,14 @@ list.forEachIndexed{position,item->
                Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
                    EmptyTextField(
                        "Marque",
-                       currentTransfo!!.marque,
+                       currentTransfo?.marque?:"",
                        10,
                        {},
                        Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "N° série",
-                       currentTransfo!!.n_serie,
+                       currentTransfo?.n_serie?:"",
                        25,
                        {},
                        Modifier.fillMaxWidth()
@@ -252,21 +262,21 @@ list.forEachIndexed{position,item->
                Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
                    EmptyTextField(
                        "Tension",
-                       currentTransfo!!.tension,
+                       currentTransfo?.tension?:"",
                        10,
                        {},
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Puissance",
-                       currentTransfo!!.puissance,
+                       currentTransfo?.puissance?:"",
                        10,
                        {},
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Année de fabrication",
-                       currentTransfo!!.a_fabrication,
+                       currentTransfo?.a_fabrication?:"",
                        4,
                        {},
                        Modifier
@@ -275,7 +285,7 @@ list.forEachIndexed{position,item->
                Spacer(modifier = Modifier.height(20.dp))
                EmptyTextField(
                    "Fournisseur",
-                   currentTransfo!!.fournisseur,
+                   currentTransfo?.fournisseur?:"",
                    30,
                    {},
                    Modifier.fillMaxWidth()
@@ -283,21 +293,21 @@ list.forEachIndexed{position,item->
                Spacer(modifier = Modifier.height(20.dp))
                FileSection(
                    "Fiche garantie",
-                   currentTransfo!!.fiche_garantie,
+                   currentTransfo?.fiche_garantie?:"",
                    {},
                    Modifier.fillMaxWidth()
                )
                Spacer(modifier = Modifier.height(20.dp))
                FileSection(
                    "Rapport PV",
-                   currentTransfo!!.pv_d_essaie,
+                   currentTransfo?.pv_d_essaie?:"",
                    {},
                    Modifier.fillMaxWidth()
                )
                Spacer(modifier = Modifier.height(20.dp))
                FileSection(
                    "Plaque signalitique",
-                   currentTransfo!!.plaque_signalitique,
+                   currentTransfo?.plaque_signalitique?:"",
                    {},
                    Modifier.fillMaxWidth()
                )
@@ -309,7 +319,11 @@ list.forEachIndexed{position,item->
                             .padding(horizontal = 5.dp)
                             .shadow(2.dp, RoundedCornerShape(10.dp))
                             .background(Color(0xff0073FF))
-                            .clickable { editTransfo = true }
+                            .clickable {
+                                window.isEnabled=true
+                                transfoHistory(currentTransfo!!.n_serie)
+                                editTransfo=false
+                            }
                     ) {
                         Text(
                             "Historique des mouvements",
@@ -353,7 +367,10 @@ list.forEachIndexed{position,item->
                                 .padding(horizontal = 5.dp)
                                 .shadow(2.dp, RoundedCornerShape(20.dp))
                                 .background(Color(0xff0073FF))
-                                .clickable { editTransfo = true }
+                                .clickable {
+                                    window.isEnabled=true
+                                    addTransfo=false
+                                }
                         ) {
                             Text(
                                 "Créer",
@@ -466,7 +483,9 @@ list.forEachIndexed{position,item->
                                 .padding(horizontal = 5.dp)
                                 .shadow(2.dp, RoundedCornerShape(20.dp))
                                 .background(Color(0xff0073FF))
-                                .clickable { editTransfo = true }
+                                .clickable {
+                                    window.isEnabled=true
+                                    filterTransfo = false }
                         ) {
                             Text(
                                 "Filtrer",
@@ -515,7 +534,7 @@ list.forEachIndexed{position,item->
                             "District",
                             {},
                             true,
-                            Modifier.padding(top = 28.dp)
+                            Modifier
                         )
                         EmptyTextField(
                             "Poste",
