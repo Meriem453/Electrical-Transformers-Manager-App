@@ -41,14 +41,12 @@ fun Comptes(window: ComposeWindow) {
     var addAccount by remember { mutableStateOf(false) }
 
     Column (modifier = Modifier.fillMaxSize()){
-        var search by remember {
-            mutableStateOf("")
-        }
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
                 hint = "Nom d'utilisateur",
-                text = search,
-                onTextChanged = {search=it},
+                initText = "",
+                onTextChanged = {},
                 modifier = Modifier.weight(1f)
             )
             Button(
@@ -181,7 +179,9 @@ fun Comptes(window: ComposeWindow) {
                         DropDown(
                             listOf("Gestionnaire des transfo","Visiteur"),
                             "Type",
-                            {},
+                            {_,_ ->
+
+                            },
                             true,
                             Modifier
                         )

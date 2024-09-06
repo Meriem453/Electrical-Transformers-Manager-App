@@ -8,7 +8,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -20,14 +20,19 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SearchBar(
     hint:String,
-    text: String,
+    initText: String,
     onTextChanged:(text:String)->Unit,
     suggestions:List<String> = emptyList(),
     modifier: Modifier=Modifier
 ){
+    var search by remember {
+        mutableStateOf(initText)
+    }
     TextField(
-        value = text,
-        onValueChange = {onTextChanged(it)},
+        value = search,
+        onValueChange = {
+            search=it
+            onTextChanged(it)},
         placeholder = {
             Text(hint, fontSize = 18.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
         },

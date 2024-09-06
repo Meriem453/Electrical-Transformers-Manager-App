@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 
 @Composable
-fun DropDown(districts:List<String>,Label:String,selected:(item:Int)->Unit,enabled:Boolean,modifier: Modifier=Modifier){
+fun DropDown(districts:List<String>,Label:String,selected:(item:String,position:Int)->Unit,enabled:Boolean,modifier: Modifier=Modifier){
     var mExpanded by remember { mutableStateOf(false) }
     var mSelectedText by remember { mutableStateOf("") }
 
@@ -61,7 +61,7 @@ fun DropDown(districts:List<String>,Label:String,selected:(item:Int)->Unit,enabl
                 DropdownMenuItem(
                 onClick = {
                     mSelectedText=districts[index]
-                    selected(index)
+                    selected(s,index)
                     mExpanded=false
                 }){Text(text = s)} }
         }

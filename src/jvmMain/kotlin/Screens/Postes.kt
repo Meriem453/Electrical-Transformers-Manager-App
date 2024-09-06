@@ -49,20 +49,20 @@ fun Postes(window: ComposeWindow) {
     var addPoste by remember { mutableStateOf(false) }
 
     Column (modifier = Modifier.fillMaxSize()){
-        var search by remember {
-            mutableStateOf("")
-        }
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
                 hint = "District",
-                text = search,
-                onTextChanged = {search=it},
+                initText = "",
+                onTextChanged = {},
                 modifier = Modifier.weight(1f)
             )
             DropDown(
                 listOf("El-Harrach","Rouiba"),
                 "District",
-                {},
+                {_,pos ->
+
+                },
                 true
             )
             Button(
@@ -187,7 +187,9 @@ fun Postes(window: ComposeWindow) {
                         DropDown(
                             listOf("El Harrach","Rouiba"),
                             "District",
-                            {},
+                            {_,pos ->
+
+                            },
                             true,
                             Modifier.fillMaxWidth(.3f)
                         )
@@ -203,7 +205,9 @@ fun Postes(window: ComposeWindow) {
                         DropDown(
                             listOf("NP"),
                             "Nature",
-                            {},
+                            {_,pos ->
+
+                            },
                             true,
                             Modifier.fillMaxWidth()
                         )

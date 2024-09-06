@@ -39,14 +39,12 @@ fun Districts(window: ComposeWindow) {
     var addDistrict by remember { mutableStateOf(false) }
 
     Column (modifier = Modifier.fillMaxSize()){
-        var search by remember {
-            mutableStateOf("")
-        }
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
                 hint = "District",
-                text = search,
-                onTextChanged = {search=it},
+                initText = "",
+                onTextChanged = {},
                 modifier = Modifier.weight(1f)
             )
             Button(

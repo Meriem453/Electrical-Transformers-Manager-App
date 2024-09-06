@@ -48,9 +48,7 @@ val list= listOf(
 @Composable
 fun Mouvements(window: ComposeWindow,transfo:String) {
     Column (modifier = Modifier.fillMaxSize()){
-        var search by remember {
-            mutableStateOf(transfo)
-        }
+
         var findTransfo by remember { mutableStateOf(false) }
         var addMvt by remember { mutableStateOf(false) }
         var filterMvt by remember { mutableStateOf(false) }
@@ -61,8 +59,8 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
                 hint = "N° de série transfo",
-                text = search,
-                onTextChanged = {search=it},
+                initText = "",
+                onTextChanged = {},
                 modifier = Modifier.weight(1f)
             )
             Button(
@@ -168,7 +166,6 @@ if(findTransfo){
             size = DpSize(1000.dp,1000.dp)
         ),icon = painterResource("images/sonelgaz.png"), title = "Saisir un bon de mouvement"
     ){
-        var n_serie by remember { mutableStateOf("") }
 
         Column(
             modifier = Modifier
@@ -201,9 +198,9 @@ if(findTransfo){
             Spacer(modifier = Modifier.height(20.dp))
             SearchBar(
                 hint = "N° série",
-                text = n_serie,
+                initText = "",
                 {
-                    n_serie=it
+
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -378,7 +375,9 @@ if(findTransfo){
                                     DropDown(
                                         listOf("El Harrach", "Rouiba"),
                                         "Emetteur (District)",
-                                        {},
+                                        {_,pos ->
+
+                                        },
                                         true,
                                     )
                                     Spacer(modifier = Modifier.width(20.dp))
@@ -430,8 +429,8 @@ if(findTransfo){
                                             "Transfert DD vers GDC"
                                         ),
                                         "Motif",
-                                        {
-                                            when (it) {
+                                        {_,pos ->
+                                            when (pos) {
                                                 0 -> {
                                                     motifAvar = true
                                                     motifEntr = false
@@ -488,8 +487,8 @@ if(findTransfo){
                                         DropDown(
                                             listOf("Stock", "Exploitation", "Platform DD", "Platform GDC", "Autre"),
                                             "Destination",
-                                            {
-                                                when (it) {
+                                            {_,pos ->
+                                                when (pos) {
                                                     1 -> {
                                                         destAutre = false
                                                         destExploi = true
@@ -521,7 +520,9 @@ if(findTransfo){
                                         DropDown(
                                             listOf(),
                                             "Préciser",
-                                            {},
+                                            {_,pos ->
+
+                                            },
                                             destAutre,
                                         )
                                     }
@@ -546,7 +547,9 @@ if(findTransfo){
                                         DropDown(
                                             listOf("1024", "2543", "52136", "522148"),
                                             "N° poste",
-                                            {},
+                                            {_,pos ->
+
+                                            },
                                             true,
                                         )
                                         Spacer(modifier = Modifier.width(20.dp))
@@ -595,7 +598,9 @@ if(findTransfo){
                                                 "Sinistre"
                                             ),
                                             "Cause d'avarie",
-                                            {},
+                                            {_,pos ->
+
+                                            },
                                             true,
                                         )
                                         Spacer(modifier = Modifier.width(20.dp))
@@ -624,7 +629,9 @@ if(findTransfo){
                                         DropDown(
                                             listOf(),
                                             "Cause d'avarie",
-                                            {},
+                                            {_,pos ->
+
+                                            },
                                             true,
                                         )
                                         Spacer(modifier = Modifier.width(20.dp))
@@ -843,7 +850,9 @@ if(findTransfo){
                                     "Transfert DD vers GDC"
                                 ),
                                 "Motif",
-                                {},
+                                {_,pos ->
+
+                                },
                                 true,
                                 Modifier.fillMaxWidth(.3f)
                             )
@@ -868,7 +877,9 @@ if(findTransfo){
                             DropDown(
                                 listOf("Exploitation","Stock","Platform DD","Platform GDC","Autre"),
                                 "Destination",
-                                {},
+                                {_,pos ->
+
+                                },
                                 true,
                                 Modifier.fillMaxWidth(.5f)
                             )
@@ -991,7 +1002,9 @@ if(findTransfo){
                             DropDown(
                                 listOf("El Harrach", "Rouiba"),
                                 "Emetteur (District)",
-                                {},
+                                {_,pos ->
+
+                                },
                                 true,
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -1043,8 +1056,8 @@ if(findTransfo){
                                     "Transfert DD vers GDC"
                                 ),
                                 "Motif",
-                                {
-                                    when (it) {
+                                {_,pos ->
+                                    when (pos) {
                                         0 -> {
                                             motifAvar = true
                                             motifEntr = false
@@ -1101,8 +1114,8 @@ if(findTransfo){
                                 DropDown(
                                     listOf("Stock", "Exploitation", "Platform DD", "Platform GDC", "Autre"),
                                     "Destination",
-                                    {
-                                        when (it) {
+                                    {_,pos ->
+                                        when (pos) {
                                             1 -> {
                                                 destAutre = false
                                                 destExploi = true
@@ -1134,7 +1147,9 @@ if(findTransfo){
                                 DropDown(
                                     listOf(),
                                     "Préciser",
-                                    {},
+                                    {_,pos ->
+
+                                    },
                                     destAutre,
                                 )
                             }
@@ -1159,7 +1174,9 @@ if(findTransfo){
                                 DropDown(
                                     listOf("1024", "2543", "52136", "522148"),
                                     "N° poste",
-                                    {},
+                                    {_,pos ->
+
+                                    },
                                     true,
                                 )
                                 Spacer(modifier = Modifier.width(20.dp))
@@ -1208,7 +1225,9 @@ if(findTransfo){
                                         "Sinistre"
                                     ),
                                     "Cause d'avarie",
-                                    {},
+                                    {_,pos ->
+
+                                    },
                                     true,
                                 )
                                 Spacer(modifier = Modifier.width(20.dp))
@@ -1237,7 +1256,9 @@ if(findTransfo){
                                 DropDown(
                                     listOf(),
                                     "Cause d'avarie",
-                                    {},
+                                    {_,pos ->
+
+                                    },
                                     true,
                                 )
                                 Spacer(modifier = Modifier.width(20.dp))

@@ -1,6 +1,7 @@
 package Screens
 import Components.*
 import Models.Transformateur
+import VIewModels.TransfoVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,50 +23,30 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 
-val transfo= listOf(
-    Transformateur("WWWWWWWWWW","1","10","1000","2003","kkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("W","111111111111111111111111111111","1000","1000","2003","kkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWW","11111111111111111111","1000","1000","2003","kk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWW","1111111","1000","1000","2003","k","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-    Transformateur("WWWWWWWWWW","111111111111111111111111111111","1000","1000","2003","kkkkkkkkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
-)
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Transfo(window: ComposeWindow,transfoHistory:(n_serie:String)->Unit) {
+
+    val vm= TransfoVM
+
     var filterTransfo by remember { mutableStateOf(false) }
     var addTransfo by remember { mutableStateOf(false) }
     var editTransfo by remember { mutableStateOf(false) }
     var currentTransfo: Transformateur? by remember { mutableStateOf(null) }
 
 Column (modifier = Modifier.fillMaxSize()){
-    var search by remember {
-        mutableStateOf("")
-    }
+
     Row(verticalAlignment = Alignment.CenterVertically) {
         SearchBar(
             hint = "N° de série",
-            text = search,
-            onTextChanged = {search=it},
+            initText = "",
+            onTextChanged = {
+                vm.filterTransfo(Transformateur(n_serie = it))
+                            },
             modifier = Modifier.weight(1f)
         )
         Button(
@@ -107,7 +88,9 @@ CheckGrp(
         DropDown(
             listOf("El-Harrach","Rouiba"),
             "District",
-            {},
+            {_,pos ->
+
+            },
             checkedItem==0
         )
         Spacer(modifier = Modifier.width(20.dp))
@@ -152,7 +135,8 @@ list.forEachIndexed{position,item->
         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
         Column(modifier = Modifier.verticalScroll(vertical_state)) {
             var hover by remember { mutableStateOf(false) }
-            transfo.forEachIndexed{pos, transfo->
+            println(vm.filteredTransfo)
+            vm.filteredTransfo.forEachIndexed{pos, transfo->
                 Box(modifier = Modifier .background(
                     if(pos==hoveredTransfoPos) Color(0xffE5F1FF) else Color.White
                 ).onPointerEvent(
@@ -465,6 +449,8 @@ list.forEachIndexed{position,item->
                 size = DpSize(1000.dp,500.dp)
             ),icon = painterResource("images/sonelgaz.png"), title = "Filtrer les transformateurs"
         ) {
+            val transfo = Transformateur()
+
             Box(
                 modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
                 contentAlignment = Alignment.TopEnd
@@ -485,6 +471,7 @@ list.forEachIndexed{position,item->
                                 .background(Color(0xff0073FF))
                                 .clickable {
                                     window.isEnabled=true
+                                    vm.filterTransfo(transfo)
                                     filterTransfo = false }
                         ) {
                             Text(
@@ -501,7 +488,7 @@ list.forEachIndexed{position,item->
                             "Marque",
                             "",
                             10,
-                            {},
+                            {transfo.marque=it},
                             Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
                         )
                     }
@@ -510,21 +497,21 @@ list.forEachIndexed{position,item->
                             "Tension",
                             "",
                             10,
-                            {},
+                            {transfo.tension=it},
                             Modifier.padding(end = 10.dp)
                         )
                         EmptyTextField(
                             "Puissance",
                             "",
                             10,
-                            {},
+                            {transfo.puissance=it},
                             Modifier.padding(end = 10.dp)
                         )
                         EmptyTextField(
                             "Année de fabrication",
                             "",
                             4,
-                            {},
+                            {transfo.a_fabrication=it},
                             Modifier
                         )
                     }
@@ -532,7 +519,8 @@ list.forEachIndexed{position,item->
                         DropDown(
                             listOf("El-Harrach","Rouiba"),
                             "District",
-                            {},
+                            {dist,_ ->
+                                transfo.district=dist},
                             true,
                             Modifier
                         )
@@ -540,7 +528,7 @@ list.forEachIndexed{position,item->
                             "Poste",
                             "",
                             10,
-                            {},
+                            {transfo.poste=it},
                             Modifier.padding(start = 10.dp)
                         )
                     }
