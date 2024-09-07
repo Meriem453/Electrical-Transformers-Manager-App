@@ -1,9 +1,9 @@
 package Screens
 
-import Components.Button
-import Components.DropDown
-import Components.EmptyTextField
-import Components.SearchBar
+import Screens.Components.Button
+import Screens.Components.DropDown
+import Screens.Components.EmptyTextField
+import Screens.Components.SearchBar
 import Models.District
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*

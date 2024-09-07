@@ -1,19 +1,20 @@
 package Models
 
 data class Mouvement(
-    val n_bon:String,
-    val date_mvt:String,
-    val date_saisie:String,
-    val motif:String,
-    val marque:String,
-    val n_serie_transfo:String,
-    val puissance:String,
-    val tension:String,
-    val annee_de_fab:String,
-    val fournisseur:String,
-    val destination:String,
-    val district:String,
-    val poste:String,
-    val bon_mvt:String
+    var n_bon:String="",
+    var date_mvt:String="",
+    var date_saisie:String="",
+    var date_bon:String="",
+    var motif:String="",
+    var marque:String="",
+    var n_serie_transfo:String="",
+    var puissance:String="",
+    var tension:String="",
+    var annee_de_fab:String="",
+    var fournisseur:String="",
+    var destination:String="",
+    var district:String="",
+    var poste:String="",
+    var bon_mvt:String=""
 
 )

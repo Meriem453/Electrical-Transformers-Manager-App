@@ -4,7 +4,6 @@ import Models.Transformateur
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import org.jetbrains.skia.impl.Log
 
 val transfo= listOf(
     Transformateur("WWWWWWWWWW","1","10","1000","2003","kkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
@@ -18,7 +17,7 @@ val transfo= listOf(
 )
 object TransfoVM {
 
-    private var allTransfo by mutableStateOf(transfo)
+    private var allTransfo by mutableStateOf(emptyList<Transformateur>())
     var filteredTransfo by mutableStateOf(allTransfo)
         fun filterTransfo(transfo:Transformateur){
             filteredTransfo=allTransfo.filter {
@@ -33,11 +32,13 @@ object TransfoVM {
             }
 
         }
-
+    fun getAllTransfo(){
+        allTransfo= transfo
+        filteredTransfo= transfo
+    }
 init {
-    allTransfo= transfo
+    getAllTransfo()
 }
-
 
 }
 

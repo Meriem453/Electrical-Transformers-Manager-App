@@ -1,4 +1,4 @@
-package Components
+package Screens.Components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

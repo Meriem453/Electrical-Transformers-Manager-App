@@ -1,4 +1,4 @@
-package Components
+package Screens.Components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

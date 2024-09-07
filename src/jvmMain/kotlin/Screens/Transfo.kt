@@ -1,6 +1,6 @@
 package Screens
-import Components.*
 import Models.Transformateur
+import Screens.Components.*
 import VIewModels.TransfoVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -32,7 +34,6 @@ import androidx.compose.ui.window.rememberWindowState
 fun Transfo(window: ComposeWindow,transfoHistory:(n_serie:String)->Unit) {
 
     val vm= TransfoVM
-
     var filterTransfo by remember { mutableStateOf(false) }
     var addTransfo by remember { mutableStateOf(false) }
     var editTransfo by remember { mutableStateOf(false) }
@@ -135,7 +136,6 @@ list.forEachIndexed{position,item->
         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
         Column(modifier = Modifier.verticalScroll(vertical_state)) {
             var hover by remember { mutableStateOf(false) }
-            println(vm.filteredTransfo)
             vm.filteredTransfo.forEachIndexed{pos, transfo->
                 Box(modifier = Modifier .background(
                     if(pos==hoveredTransfoPos) Color(0xffE5F1FF) else Color.White

@@ -1,4 +1,4 @@
-package Components
+package Screens.Components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -27,7 +27,7 @@ fun EmptyTextField(
 Column {
     Text(title, fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
     TextField(text,{
-        if(text.length<limit){
+        if(text.length<=limit){
             text=it
             onTextChanged(it)
         }

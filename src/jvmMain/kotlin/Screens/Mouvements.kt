@@ -1,8 +1,13 @@
 package Screens
 
-import Components.*
+
 import Models.Mouvement
+import Screens.Components.DropDown
+import Screens.Components.EmptyTextField
+import Screens.Components.FileSection
+import Screens.Components.SearchBar
 import Theme
+import VIewModels.MouvmntVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,27 +31,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-val mvts = listOf(
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-    Mouvement("123456","4/5/2024","4/5/2024","Avarie","EI","123456","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
-)
+
 val list= listOf(
-    "N° Bon","Date mvt","Date saisie","Motif","Marque","N° série transfo","Puissance","Tension","Année de fab","Fournisseur","Destination","District","Poste","Bon mvt"
+    "N° Bon","Date mvt","Date saisie","Motif","Marque","N° série transfo","Puissance","Tension","Année de fab","Fournisseur","Destination","District","Poste","Bon mvt","Date bon"
 )
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun Mouvements(window: ComposeWindow,transfo:String) {
+    val vm = MouvmntVM
+    if(transfo!="") vm.filterMvt(Mouvement(n_serie_transfo = transfo),"","")
     Column (modifier = Modifier.fillMaxSize()){
 
         var findTransfo by remember { mutableStateOf(false) }
@@ -59,18 +55,20 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
                 hint = "N° de série transfo",
-                initText = "",
-                onTextChanged = {},
+                initText = transfo,
+                onTextChanged = {
+                                vm.filterMvt(Mouvement(n_serie_transfo = it),"","")
+                },
                 modifier = Modifier.weight(1f)
             )
-            Button(
+            Screens.Components.Button(
                 icon = "icons/print.svg",
                 text = "Imprimer",
                 tintColor = Color(0xff0073FF),
                 background = Color.White,
                 {}
             )
-            Button(
+            Screens.Components.Button(
                 icon = "icons/Group.svg",
                 text = "Filtrer",
                 tintColor = Color(0xff0073FF),
@@ -79,7 +77,7 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                 window.isEnabled = false
                 filterMvt = true
             }
-            Button(
+            Screens.Components.Button(
                 icon = "icons/add.svg",
                 text = "Nouveau",
                 tintColor = Color.White,
@@ -107,7 +105,7 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
                             var hover by remember { mutableStateOf(false) }
-                            mvts.forEachIndexed{pos, mvt->
+                            vm.filteredMvt.forEachIndexed{pos, mvt->
                                 Box(modifier = Modifier .background(
                                     if(pos==hoveredTransfoPos) Color(0xffE5F1FF) else Color.White
                                 ).onPointerEvent(
@@ -145,6 +143,7 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                                             11->mvt.district
                                             12->mvt.poste
                                             13->mvt.bon_mvt
+                                            14->mvt.date_bon
                                             else ->""
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
@@ -156,16 +155,18 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
             }
         }
         HorizontalScrollbar(rememberScrollbarAdapter(horizontal_state))
-if(findTransfo){
-    Window(onCloseRequest = {
-        window.isEnabled=true
-        findTransfo=false},
+if(findTransfo) {
+    Window(
+        onCloseRequest = {
+            window.isEnabled = true
+            findTransfo = false
+        },
         resizable = false,
         state = rememberWindowState(
-            position = WindowPosition(500.dp,0.dp),
-            size = DpSize(1000.dp,1000.dp)
-        ),icon = painterResource("images/sonelgaz.png"), title = "Saisir un bon de mouvement"
-    ){
+            position = WindowPosition(500.dp, 0.dp),
+            size = DpSize(1000.dp, 1000.dp)
+        ), icon = painterResource("images/sonelgaz.png"), title = "Saisir un bon de mouvement"
+    ) {
 
         Column(
             modifier = Modifier
@@ -180,8 +181,8 @@ if(findTransfo){
                         .shadow(2.dp, RoundedCornerShape(20.dp))
                         .background(Color(0xff0073FF))
                         .clickable {
-                           findTransfo=false
-                            addMvt=true
+                            findTransfo = false
+                            addMvt = true
                         }
                 ) {
                     Text(
@@ -194,46 +195,51 @@ if(findTransfo){
                 }
             }
             Spacer(modifier = Modifier.height(50.dp))
-            Text("Information du transformateur", fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = Theme.MAIN_BLUE)
-            Spacer(modifier = Modifier.height(20.dp))
-            SearchBar(
-                hint = "N° série",
-                initText = "",
-                {
-
-                },
-                modifier = Modifier.fillMaxWidth()
+            Text(
+                "Information du transformateur",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                color = Theme.MAIN_BLUE
             )
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.padding(top = 50.dp)) {
+
             Spacer(modifier = Modifier.height(30.dp))
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                TextItem("Marque","EI")
-                TextItem("Année de fabrication","2024")
-                TextItem("Fournisseur","EI")
-                TextItem("District","EI")
+            ) {
+                TextItem("Marque", "EI")
+                TextItem("Année de fabrication", "2024")
+                TextItem("Fournisseur", "EI")
+                TextItem("District", "EI")
             }
             Spacer(modifier = Modifier.height(30.dp))
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                TextItem("Tension","EI")
-                TextItem("Puissance","2024")
-                TextItem("Lieu actuel","EI")
-                TextItem("Poste","EI")
-                TextItem("Nature","EI")
+            ) {
+                TextItem("Tension", "EI")
+                TextItem("Puissance", "2024")
+                TextItem("Lieu actuel", "EI")
+                TextItem("Poste", "EI")
+                TextItem("Nature", "EI")
             }
             Spacer(modifier = Modifier.height(40.dp))
-            TextItem("Designation","qsdfghjklmùwxcvbn,;:azertyuiop^$")
+            TextItem("Designation", "qsdfghjklmùwxcvbn,;:azertyuiop^$")
             Spacer(modifier = Modifier.height(40.dp))
-            Text("Historique des mouvements", fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = Theme.MAIN_BLUE)
+            Text(
+                "Historique des mouvements",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                color = Theme.MAIN_BLUE
+            )
             Spacer(modifier = Modifier.height(40.dp))
 
-            val horizontal_state2= rememberScrollState()
-            val vertical_state2= rememberScrollState()
-            var hoveredTransfoPos2:Int? by remember { mutableStateOf(null) }
+            val horizontal_state2 = rememberScrollState()
+            val vertical_state2 = rememberScrollState()
+            var hoveredTransfoPos2: Int? by remember { mutableStateOf(null) }
 
             Column(
                 modifier = Modifier
@@ -253,22 +259,23 @@ if(findTransfo){
                             )
                             Column(modifier = Modifier.verticalScroll(vertical_state2)) {
                                 var hover by remember { mutableStateOf(false) }
-                                mvts.forEachIndexed { pos, mvt ->
-                                    Box(modifier = Modifier.background(
-                                        if (pos == hoveredTransfoPos2) Color(0xffE5F1FF) else Color.White
-                                    ).onPointerEvent(
-                                        PointerEventType.Enter,
-                                        onEvent = {
-                                            hover = true
-                                            hoveredTransfoPos2 = pos
-                                        },
-                                    ).onPointerEvent(
-                                        PointerEventType.Exit,
-                                        onEvent = {
-                                            hover = false
-                                            hoveredTransfoPos2 = null
+                                vm.filteredMvt.forEachIndexed { pos, mvt ->
+                                    Box(
+                                        modifier = Modifier.background(
+                                            if (pos == hoveredTransfoPos2) Color(0xffE5F1FF) else Color.White
+                                        ).onPointerEvent(
+                                            PointerEventType.Enter,
+                                            onEvent = {
+                                                hover = true
+                                                hoveredTransfoPos2 = pos
+                                            },
+                                        ).onPointerEvent(
+                                            PointerEventType.Exit,
+                                            onEvent = {
+                                                hover = false
+                                                hoveredTransfoPos2 = null
 
-                                        }).fillMaxWidth()
+                                            }).fillMaxWidth()
                                     ) {
                                         Text(
                                             when (position) {
@@ -298,6 +305,19 @@ if(findTransfo){
             }
             HorizontalScrollbar(rememberScrollbarAdapter(horizontal_state2))
         }
+                SearchBar(
+                    hint = "N° série",
+                    initText = "",
+                    {
+                    vm.suggestTransfo(it)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    suggestions = vm.suggestedTransfo
+                ){transfo ->
+                    vm.findTransfo(transfo)
+                }
+    }
+}
     }
 }
                 if(addMvt){
@@ -776,6 +796,9 @@ if(findTransfo){
                     size = DpSize(1000.dp,500.dp)
                 ),icon = painterResource("images/sonelgaz.png"), title = "Filtrer les mouvements"
             ) {
+                val mvt=Mouvement()
+                var debut by remember { mutableStateOf("JJ/MM/AAAA") }
+                var fin by remember { mutableStateOf("JJ/MM/AAAA") }
                 Box(
                     modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
                     contentAlignment = Alignment.TopEnd
@@ -794,7 +817,11 @@ if(findTransfo){
                                     .padding(horizontal = 5.dp)
                                     .shadow(2.dp, RoundedCornerShape(20.dp))
                                     .background(Color(0xff0073FF))
-                                    .clickable { filterMvt = false }
+                                    .clickable {
+                                        vm.filterMvt(mvt,debut,fin)
+                                        window.isEnabled=true
+                                        filterMvt = false
+                                    }
                             ) {
                                 Text(
                                     "Filtrer",
@@ -810,7 +837,9 @@ if(findTransfo){
                                 "N° du bon",
                                 "",
                                 10,
-                                {},
+                                {
+                                mvt.n_bon=it
+                                },
                                 Modifier.fillMaxWidth(.3f)
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -818,7 +847,9 @@ if(findTransfo){
                                 "Date du mvt",
                                 "",
                                 10,
-                                {},
+                                {
+                                mvt.date_mvt=it
+                                },
                                 Modifier.fillMaxWidth(.5f)
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -826,7 +857,9 @@ if(findTransfo){
                                 "Date de saisie",
                                 "",
                                 10,
-                                {},
+                                {
+                                mvt.date_saisie=it
+                                },
                                 Modifier.fillMaxWidth()
                             )
                         }
@@ -850,8 +883,8 @@ if(findTransfo){
                                     "Transfert DD vers GDC"
                                 ),
                                 "Motif",
-                                {_,pos ->
-
+                                {text,_ ->
+                                mvt.motif=text
                                 },
                                 true,
                                 Modifier.fillMaxWidth(.3f)
@@ -861,7 +894,9 @@ if(findTransfo){
                                 "N° série du transfo",
                                 "",
                                 10,
-                                {},
+                                {
+                                mvt.n_serie_transfo=it
+                                },
                                 Modifier.fillMaxWidth(.5f)
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -869,7 +904,9 @@ if(findTransfo){
                                 "Marque du transfo",
                                 "",
                                 4,
-                                {},
+                                {
+                                mvt.marque=it
+                                },
                                 Modifier.fillMaxWidth()
                             )
                         }
@@ -877,8 +914,8 @@ if(findTransfo){
                             DropDown(
                                 listOf("Exploitation","Stock","Platform DD","Platform GDC","Autre"),
                                 "Destination",
-                                {_,pos ->
-
+                                {text,_ ->
+                                mvt.destination=text
                                 },
                                 true,
                                 Modifier.fillMaxWidth(.5f)
@@ -888,7 +925,9 @@ if(findTransfo){
                                 "Poste",
                                 "",
                                 10,
-                                {},
+                                {
+                                mvt.poste=it
+                                },
                                 Modifier.fillMaxWidth()
                             )
                         }
@@ -897,7 +936,9 @@ if(findTransfo){
                                 "Date du bon de mvt",
                                 "",
                                 10,
-                                {},
+                                {
+                                mvt.date_bon=it
+                                },
                                 Modifier.fillMaxWidth()
                             )
                         }
@@ -906,17 +947,21 @@ if(findTransfo){
                         Row(modifier = Modifier.fillMaxWidth().padding(top = 30.dp)){
                             EmptyTextField(
                                 "Date du début",
-                                "",
+                                debut,
                                 10,
-                                {},
+                                {
+                                debut=it
+                                },
                                 Modifier
                             )
                             Spacer(modifier = Modifier.width(20.dp))
                             EmptyTextField(
                                 "Date du fin",
-                                "",
+                                fin,
                                 10,
-                                {},
+                                {
+                                fin=it
+                                },
                                 Modifier
                             )
                         }
