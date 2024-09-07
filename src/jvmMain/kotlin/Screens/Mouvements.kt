@@ -2,6 +2,7 @@ package Screens
 
 
 import Models.Mouvement
+import Models.Transformateur
 import Screens.Components.DropDown
 import Screens.Components.EmptyTextField
 import Screens.Components.FileSection
@@ -42,6 +43,7 @@ val list= listOf(
 @Composable
 fun Mouvements(window: ComposeWindow,transfo:String) {
     val vm = MouvmntVM
+    var currentTransfo:Transformateur? by remember { mutableStateOf(null) }
     if(transfo!="") vm.filterMvt(Mouvement(n_serie_transfo = transfo),"","")
     Column (modifier = Modifier.fillMaxSize()){
 
@@ -167,31 +169,32 @@ if(findTransfo) {
             size = DpSize(1000.dp, 1000.dp)
         ), icon = painterResource("images/sonelgaz.png"), title = "Saisir un bon de mouvement"
     ) {
-
         Column(
             modifier = Modifier
                 .padding(20.dp)
         ) {
             Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                 Text("Saisir un bon de mouvement", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
-                Box(contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .padding(horizontal = 5.dp)
-                        .shadow(2.dp, RoundedCornerShape(20.dp))
-                        .background(Color(0xff0073FF))
-                        .clickable {
-                            findTransfo = false
-                            addMvt = true
-                        }
-                ) {
-                    Text(
-                        "Saisir",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
-                    )
+                if(currentTransfo!=null){
+                    Box(contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .padding(horizontal = 5.dp)
+                            .shadow(2.dp, RoundedCornerShape(20.dp))
+                            .background(Color(0xff0073FF))
+                            .clickable {
+                                findTransfo = false
+                                addMvt = true
+                            }
+                    ) {
+                        Text(
+                            "Saisir",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(50.dp))
@@ -210,24 +213,24 @@ if(findTransfo) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                TextItem("Marque", "EI")
-                TextItem("Année de fabrication", "2024")
-                TextItem("Fournisseur", "EI")
-                TextItem("District", "EI")
+                TextItem("Marque", currentTransfo?.marque?:"_")
+                TextItem("Année de fabrication", currentTransfo?.a_fabrication?:"_")
+                TextItem("Fournisseur", currentTransfo?.fournisseur?:"_")
+                TextItem("District", currentTransfo?.district?:"_")
             }
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                TextItem("Tension", "EI")
-                TextItem("Puissance", "2024")
-                TextItem("Lieu actuel", "EI")
-                TextItem("Poste", "EI")
-                TextItem("Nature", "EI")
+                TextItem("Tension", currentTransfo?.tension?:"_")
+                TextItem("Puissance", currentTransfo?.puissance?:"_")
+                TextItem("Lieu actuel", currentTransfo?.lieu_actuel?:"_")
+                TextItem("Poste", currentTransfo?.poste?:"_")
+                TextItem("Nature", "_")
             }
             Spacer(modifier = Modifier.height(40.dp))
-            TextItem("Designation", "qsdfghjklmùwxcvbn,;:azertyuiop^$")
+            TextItem("Designation", "_")
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 "Historique des mouvements",
@@ -259,7 +262,7 @@ if(findTransfo) {
                             )
                             Column(modifier = Modifier.verticalScroll(vertical_state2)) {
                                 var hover by remember { mutableStateOf(false) }
-                                vm.filteredMvt.forEachIndexed { pos, mvt ->
+                                vm.mvtOfTransfo.forEachIndexed { pos, mvt ->
                                     Box(
                                         modifier = Modifier.background(
                                             if (pos == hoveredTransfoPos2) Color(0xffE5F1FF) else Color.White
@@ -314,7 +317,8 @@ if(findTransfo) {
                     modifier = Modifier.fillMaxWidth(),
                     suggestions = vm.suggestedTransfo
                 ){transfo ->
-                    vm.findTransfo(transfo)
+                    currentTransfo=transfo
+                    vm.findTransfoMouvment(transfo)
                 }
     }
 }
@@ -338,6 +342,8 @@ if(findTransfo) {
                         var motifTransfertInterDD by remember { mutableStateOf(false) }
                         var motifTransfertDDversGDC by remember { mutableStateOf(false) }
                         var motifVente by remember { mutableStateOf(false) }
+
+                        var mouvement =Mouvement()
 
                         val verticalScroll = rememberScrollState()
 
@@ -380,7 +386,7 @@ if(findTransfo) {
                                 }
                                 Spacer(modifier = Modifier.height(50.dp))
                                 Text(
-                                    "Transfo: 123456985 Marque:EI Provenance:Stock",
+                                    "Transfo: ${currentTransfo!!.n_serie} Marque: ${currentTransfo!!.marque} Provenance:${currentTransfo!!.lieu_actuel}",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 20.sp,
                                     color = Theme.MAIN_BLUE,
@@ -395,8 +401,8 @@ if(findTransfo) {
                                     DropDown(
                                         listOf("El Harrach", "Rouiba"),
                                         "Emetteur (District)",
-                                        {_,pos ->
-
+                                        {text,pos ->
+                                            mouvement.district=text
                                         },
                                         true,
                                     )
@@ -405,7 +411,9 @@ if(findTransfo) {
                                         "N° du bon de mvt",
                                         "",
                                         10,
-                                        {},
+                                        {
+                                        mouvement.n_bon=it
+                                        },
                                         Modifier
                                     )
                                     Spacer(modifier = Modifier.width(20.dp))
@@ -413,7 +421,9 @@ if(findTransfo) {
                                         "Date du bon de mvt",
                                         "",
                                         10,
-                                        {},
+                                        {
+                                        mouvement.date_bon=it
+                                        },
                                         Modifier
                                     )
                                     Spacer(modifier = Modifier.width(20.dp))
@@ -421,7 +431,9 @@ if(findTransfo) {
                                         "Date de mvt",
                                         "",
                                         10,
-                                        {},
+                                        {
+                                        mouvement.date_mvt=it
+                                        },
                                         Modifier
                                     )
                                 }
@@ -449,7 +461,7 @@ if(findTransfo) {
                                             "Transfert DD vers GDC"
                                         ),
                                         "Motif",
-                                        {_,pos ->
+                                        {text,pos ->
                                             when (pos) {
                                                 0 -> {
                                                     motifAvar = true
@@ -499,6 +511,7 @@ if(findTransfo) {
                                                     motifTransfertDDversGDC = false
                                                 }
                                             }
+                                            mouvement.motif= text
                                         },
                                         true,
                                     )
@@ -507,7 +520,7 @@ if(findTransfo) {
                                         DropDown(
                                             listOf("Stock", "Exploitation", "Platform DD", "Platform GDC", "Autre"),
                                             "Destination",
-                                            {_,pos ->
+                                            {text,pos ->
                                                 when (pos) {
                                                     1 -> {
                                                         destAutre = false
@@ -533,6 +546,7 @@ if(findTransfo) {
                                                         destPlat = false
                                                     }
                                                 }
+                                                mouvement.destination=text
                                             },
                                             true,
                                         )
@@ -541,7 +555,7 @@ if(findTransfo) {
                                             listOf(),
                                             "Préciser",
                                             {_,pos ->
-
+                                            //TODO("")
                                             },
                                             destAutre,
                                         )
@@ -552,7 +566,9 @@ if(findTransfo) {
                                             "Date d'entrée",
                                             "",
                                             10,
-                                            {},
+                                            {
+                                            //TODO("")
+                                            },
                                             Modifier
                                         )
                                     }
@@ -647,7 +663,12 @@ if(findTransfo) {
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         DropDown(
-                                            listOf(),
+                                            listOf(
+                                                "Fuite d'huile",
+                                                "Poupé fissurés",
+                                                "Borne cramé",
+                                                "Manque d'huile"
+                                            ),
                                             "Cause d'avarie",
                                             {_,pos ->
 
@@ -748,7 +769,9 @@ if(findTransfo) {
                     size = DpSize(500.dp,250.dp)
                 ),icon = painterResource("images/sonelgaz.png"), title = "Confirmation"
             ){
-                Column {
+                Column(modifier = Modifier
+                    .background(Theme.BACKGROUND)
+                    .padding(30.dp)) {
                     Text("Confirmation", fontSize = 25.sp, fontWeight = FontWeight.Medium, color = Theme.MAIN_BLUE, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
                     Spacer(modifier = Modifier.height(20.dp))
                     Text("Voulez vous vraiment quitter ?", fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
@@ -774,6 +797,7 @@ if(findTransfo) {
                                 .shadow(2.dp, RoundedCornerShape(10.dp))
                                 .background(Color(0xff0073FF))
                                 .clickable {
+                                    currentTransfo=null
                                     addMvt=false
                                     closeConfirm=false
                                     window.isEnabled=true

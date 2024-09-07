@@ -1,6 +1,6 @@
 package Screens.Components
 
-import VIewModels.SearchTransfo
+import Models.Transformateur
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,9 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -23,17 +21,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.zIndex
-import kotlin.math.exp
+
 
 @Composable
 fun SearchBar(
     hint:String,
     initText: String,
     onTextChanged:(text:String)->Unit,
-    suggestions:List<SearchTransfo> = emptyList(),
+    suggestions:List<Transformateur> = emptyList(),
     modifier: Modifier=Modifier,
-    itemSelected:(transfo:SearchTransfo)->Unit={_ ->}
+    itemSelected:(transfo:Transformateur)->Unit={_ ->}
 ){
     var search by remember {
         mutableStateOf(initText)

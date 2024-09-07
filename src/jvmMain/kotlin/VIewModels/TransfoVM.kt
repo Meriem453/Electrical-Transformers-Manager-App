@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 val transfo= listOf(
-    Transformateur("WWWWWWWWWW","1","10","1000","2003","kkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
+    Transformateur("EI","1","10","1000","2003","kkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
     Transformateur("W","111111111111111111111111111111","1000","1000","2003","kkkk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
     Transformateur("WWWW","11111111111111111111","1000","1000","2003","kk","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),
     Transformateur("WWW","1111111","1000","1000","2003","k","Exploitation","El-Harrach","2222222222","gggggggggg.pdf","gggggggggg.pdf","manquante"),

@@ -8,10 +8,7 @@ import androidx.compose.runtime.setValue
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class SearchTransfo(
-    var n_serie:String,
-    var marque:String
-)
+
 
 val mvts = listOf(
     Mouvement("12","4/5/2024","4/5/2024","04/01/2003","Avarie","EI","123","2000","2000","2024","lqdkfvosjo","Exploitation","Rouiba","20144","xfhgjh.pdf"),
@@ -30,10 +27,10 @@ val mvts = listOf(
 object MouvmntVM {
 
     private var allMvt by mutableStateOf(emptyList<Mouvement>())
+    private var allTransfo by mutableStateOf(emptyList<Transformateur>())
     var mvtOfTransfo by mutableStateOf(emptyList<Mouvement>())
     var filteredMvt by mutableStateOf(allMvt)
-    var suggestedTransfo by mutableStateOf(emptyList<SearchTransfo>())
-    var currentTransfo by mutableStateOf<Transformateur?>(null)
+    var suggestedTransfo by mutableStateOf(emptyList<Transformateur>())
     fun filterMvt(mvt: Mouvement,debut:String,fin:String){
         filteredMvt= allMvt.filter {
             (mvt.n_bon.isEmpty() || it.n_bon == mvt.n_bon) &&
@@ -63,24 +60,24 @@ object MouvmntVM {
     }
 
     fun suggestTransfo(text:String){
-        suggestedTransfo= allMvt.filter {
-            it.n_serie_transfo==text
-        }.map {
-            SearchTransfo(it.n_serie_transfo,it.marque)
-        }.distinct()
+        getAllTransfo()
+        suggestedTransfo= allTransfo.filter {
+            it.n_serie.contains(text)
+        }
     }
 
-    fun findTransfo(transfo: SearchTransfo){
+    fun findTransfoMouvment(transfo: Transformateur){
         mvtOfTransfo= allMvt.filter {
             it.n_serie_transfo==transfo.n_serie && it.marque==transfo.marque
         }
-       //TODO("search the transfo")
     }
     fun getAllMvts(){
         allMvt= mvts
         filteredMvt= mvts
     }
-
+private fun getAllTransfo(){
+    allTransfo= transfo
+}
     init {
         getAllMvts()
     }
