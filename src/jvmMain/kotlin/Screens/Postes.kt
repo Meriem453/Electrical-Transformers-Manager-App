@@ -5,6 +5,7 @@ import Screens.Components.DropDown
 import Screens.Components.EmptyTextField
 import Screens.Components.SearchBar
 import Models.Poste
+import VIewModels.PostesVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,20 +32,13 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 
-val postes= listOf(
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-)
+
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Postes(window: ComposeWindow) {
+
+    val vm = PostesVM
 
     var addPoste by remember { mutableStateOf(false) }
 
@@ -52,9 +46,11 @@ fun Postes(window: ComposeWindow) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             SearchBar(
-                hint = "District",
+                hint = "Numéro du poste",
                 initText = "",
-                onTextChanged = {},
+                onTextChanged = {
+                                vm.filterPostes(it)
+                },
                 modifier = Modifier.weight(1f)
             )
             DropDown(
@@ -99,10 +95,10 @@ fun Postes(window: ComposeWindow) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
                 list.forEachIndexed{position,item->
                     Column {
-                       if(item!=null) Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp)) else Spacer(Modifier)
+                       if(item!=null) Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp)) else Box(Modifier.height(57.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
                             var hover by remember { mutableStateOf(false) }
-                            postes.forEachIndexed{pos, poste->
+                            vm.filteredPostes.forEachIndexed{pos, poste->
                                 Box(modifier = Modifier .background(
                                     if(pos==hoveredPostePos) Color(0xffE5F1FF) else Color.White
                                 ).onPointerEvent(
@@ -130,7 +126,7 @@ fun Postes(window: ComposeWindow) {
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
-                                    if(item==null) Icon(Icons.Default.Delete,"", tint = Color(0xffb70007))
+                                    if(item==null) Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(10.dp))
                                 }
                             }
                         }

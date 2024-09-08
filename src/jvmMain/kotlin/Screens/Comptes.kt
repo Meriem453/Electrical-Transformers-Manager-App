@@ -5,6 +5,7 @@ import Screens.Components.DropDown
 import Screens.Components.EmptyTextField
 import Screens.Components.SearchBar
 import Models.Compte
+import VIewModels.ComptesVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,17 +29,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 
-val comptes= listOf(
-    Compte("El harrach","Mehdi","RDA","Bourmad","Salim","Tech sup","bourmad@gmail.com"),
-    Compte("El harrach","Mehdi","RDA","Bourmad","Salim","Tech sup","bourmad@gmail.com"),
-    Compte("El harrach","Mehdi","RDA","Bourmad","Salim","Tech sup","bourmad@gmail.com"),
-    Compte("El harrach","Mehdi","RDA","Bourmad","Salim","Tech sup","bourmad@gmail.com"),
-    Compte("El harrach","Mehdi","RDA","Bourmad","Salim","Tech sup","bourmad@gmail.com"),
-)
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Comptes(window: ComposeWindow) {
     var addAccount by remember { mutableStateOf(false) }
+    val vm = ComptesVM
 
     Column (modifier = Modifier.fillMaxSize()){
 
@@ -46,7 +42,9 @@ fun Comptes(window: ComposeWindow) {
             SearchBar(
                 hint = "Nom d'utilisateur",
                 initText = "",
-                onTextChanged = {},
+                onTextChanged = {
+                                vm.filterComptes(it)
+                },
                 modifier = Modifier.weight(1f)
             )
             Button(
@@ -79,7 +77,7 @@ fun Comptes(window: ComposeWindow) {
                         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
                             var hover by remember { mutableStateOf(false) }
-                            comptes.forEachIndexed{pos, compte->
+                            vm.filteredComptes.forEachIndexed{pos, compte->
                                 Box(modifier = Modifier .background(
                                     if(pos==hoveredDistPos) Color(0xffE5F1FF) else Color.White
                                 ).onPointerEvent(

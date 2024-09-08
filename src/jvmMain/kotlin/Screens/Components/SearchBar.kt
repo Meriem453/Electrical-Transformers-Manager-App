@@ -64,6 +64,7 @@ var expanded by remember { mutableStateOf(false) }
                 mTextFieldSize = coordinates.size.toSize()
             }
             ,shape = RoundedCornerShape(20.dp),
+            maxLines = 1
         )
         if(expanded){
             Column(modifier = Modifier

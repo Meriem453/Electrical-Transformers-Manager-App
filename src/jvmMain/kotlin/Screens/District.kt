@@ -5,6 +5,7 @@ import Screens.Components.DropDown
 import Screens.Components.EmptyTextField
 import Screens.Components.SearchBar
 import Models.District
+import VIewModels.DistrictVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,13 +29,11 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 
-val dist= listOf(
-    District("El Harrach","Rouiba","EHR","55","552")
-)
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Districts(window: ComposeWindow) {
+    val vm = DistrictVM
 
     var addDistrict by remember { mutableStateOf(false) }
 
@@ -44,7 +43,9 @@ fun Districts(window: ComposeWindow) {
             SearchBar(
                 hint = "District",
                 initText = "",
-                onTextChanged = {},
+                onTextChanged = {
+                                vm.filterDistricts(it)
+                },
                 modifier = Modifier.weight(1f)
             )
             Button(
@@ -77,7 +78,7 @@ fun Districts(window: ComposeWindow) {
                         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
                             var hover by remember { mutableStateOf(false) }
-                            dist.forEachIndexed{pos, dist->
+                            vm.filteredDistricts.forEachIndexed{pos, dist->
                                 Box(modifier = Modifier .background(
                                     if(pos==hoveredDistPos) Color(0xffE5F1FF) else Color.White
                                 ).onPointerEvent(
