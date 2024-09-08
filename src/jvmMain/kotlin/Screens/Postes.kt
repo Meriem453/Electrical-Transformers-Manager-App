@@ -73,7 +73,8 @@ fun Postes(window: ComposeWindow) {
                 text = "Nouveau",
                 tintColor = Color.White,
                 background = Color(0xff0073FF),
-                {addPoste=true}
+                {window.isEnabled=false
+                    addPoste=true}
             )
         }
         val horizontal_state= rememberScrollState()
@@ -152,6 +153,8 @@ fun Postes(window: ComposeWindow) {
                 contentAlignment = Alignment.TopEnd
             ) {
                 var scrollState = rememberScrollState()
+                var empty by remember { mutableStateOf(false) }
+                val poste=Poste()
                 Column(
                     modifier = Modifier
                         .padding(20.dp)
@@ -159,13 +162,27 @@ fun Postes(window: ComposeWindow) {
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                         Text("Ajouter un poste", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
                         Box(contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(10.dp))
                                 .padding(horizontal = 5.dp)
                                 .shadow(2.dp, RoundedCornerShape(20.dp))
                                 .background(Color(0xff0073FF))
-                                .clickable { addPoste = false }
+                                .clickable {
+                                    if(
+                                        poste.Numero!=""&&
+                                        poste.Designation!=""&&
+                                        poste.Nature!=""&&
+                                        poste.District!=""
+                                    )
+                                    {
+                                        window.isEnabled=true
+                                        addPoste = false
+
+                                    }
+                                    else empty=true
+                                }
                         ) {
                             Text(
                                 "Créer",
@@ -183,8 +200,8 @@ fun Postes(window: ComposeWindow) {
                         DropDown(
                             listOf("El Harrach","Rouiba"),
                             "District",
-                            {_,pos ->
-
+                            {text,_ ->
+                                poste.District=text
                             },
                             true,
                             Modifier.fillMaxWidth(.3f)
@@ -194,15 +211,17 @@ fun Postes(window: ComposeWindow) {
                             "Numero",
                             "",
                             10,
-                            {},
+                            {
+                            poste.Numero=it
+                            },
                             Modifier.fillMaxWidth(.5f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         DropDown(
                             listOf("NP"),
                             "Nature",
-                            {_,pos ->
-
+                            {text,_ ->
+                                poste.Nature=text
                             },
                             true,
                             Modifier.fillMaxWidth()
@@ -216,7 +235,9 @@ fun Postes(window: ComposeWindow) {
                             "Désignation",
                             "",
                             10,
-                            {},
+                            {
+                            poste.Designation=it
+                            },
                             Modifier.fillMaxWidth()
                         )
                     }

@@ -5,6 +5,7 @@ import Screens.Components.DropDown
 import Screens.Components.EmptyTextField
 import Screens.Components.SearchBar
 import Models.District
+import Models.Poste
 import VIewModels.DistrictVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -53,7 +54,8 @@ fun Districts(window: ComposeWindow) {
                 text = "Nouveau",
                 tintColor = Color.White,
                 background = Color(0xff0073FF),
-                {addDistrict=true}
+                {window.isEnabled=false
+                    addDistrict=true}
             )
         }
         val horizontal_state= rememberScrollState()
@@ -123,6 +125,8 @@ fun Districts(window: ComposeWindow) {
                 size = DpSize(1000.dp,500.dp)
             ),icon = painterResource("images/sonelgaz.png"), title = "Ajouter une district"
         ) {
+            var empty by remember { mutableStateOf(false) }
+            var district=District()
             Box(
                 modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
                 contentAlignment = Alignment.TopEnd
@@ -135,13 +139,26 @@ fun Districts(window: ComposeWindow) {
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                         Text("Ajouter une district", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
                         Box(contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(10.dp))
                                 .padding(horizontal = 5.dp)
                                 .shadow(2.dp, RoundedCornerShape(20.dp))
                                 .background(Color(0xff0073FF))
-                                .clickable { addDistrict = false }
+                                .clickable {
+                                    if(
+                                        district.district!=""&&
+                                        district.centre!=""&&
+                                        district.init!=""&&
+                                        district.code_centre!=""&&
+                                        district.code_agence!=""
+                                    ) {
+                                        window.isEnabled=true
+                                        addDistrict = false
+                                        }
+                                    else empty=true
+                                }
                         ) {
                             Text(
                                 "Créer",
@@ -160,7 +177,9 @@ fun Districts(window: ComposeWindow) {
                             "District",
                             "",
                             10,
-                            {},
+                            {
+                            district.district=it
+                            },
                             Modifier.fillMaxWidth(.3f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
@@ -168,7 +187,9 @@ fun Districts(window: ComposeWindow) {
                             "Centre",
                             "",
                             10,
-                            {},
+                            {
+                            district.centre=it
+                            },
                             Modifier.fillMaxWidth(.5f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
@@ -176,7 +197,9 @@ fun Districts(window: ComposeWindow) {
                             "Init",
                             "",
                             10,
-                            {},
+                            {
+                            district.init=it
+                            },
                             Modifier.fillMaxWidth()
                         )
                     }
@@ -188,7 +211,9 @@ fun Districts(window: ComposeWindow) {
                             "Code district",
                             "",
                             10,
-                            {},
+                            {
+                            district.code_agence=it
+                            },
                             Modifier.fillMaxWidth(.3f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
@@ -196,7 +221,9 @@ fun Districts(window: ComposeWindow) {
                             "Code centre",
                             "",
                             10,
-                            {},
+                            {
+                            district.code_centre=it
+                            },
                             Modifier.fillMaxWidth(.5f)
                         )
 

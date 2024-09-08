@@ -1,9 +1,9 @@
 package Models
 
 data class District(
-    val centre:String,
-    val district:String,
-    val init:String,
-    val code_agence:String,
-    val code_centre:String
+    var centre:String="",
+    var district:String="",
+    var init:String="",
+    var code_agence:String="",
+    var code_centre:String=""
 )

@@ -337,6 +337,8 @@ list.forEachIndexed{position,item->
                 modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
                 contentAlignment = Alignment.TopEnd
             ) {
+                var empty by remember { mutableStateOf(false) }
+                val transfo=Transformateur()
                 var scrollState = rememberScrollState()
                 Column(
                     modifier = Modifier
@@ -345,6 +347,7 @@ list.forEachIndexed{position,item->
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                         Text("Créer un transformateur", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
                         Box(contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(10.dp))
@@ -352,8 +355,18 @@ list.forEachIndexed{position,item->
                                 .shadow(2.dp, RoundedCornerShape(20.dp))
                                 .background(Color(0xff0073FF))
                                 .clickable {
-                                    window.isEnabled=true
-                                    addTransfo=false
+                                    if(
+                                        transfo.marque!=""&&
+                                        transfo.n_serie!=""&&
+                                        transfo.fournisseur!=""&&
+                                        transfo.tension!=""&&
+                                        transfo.puissance!=""&&
+                                        transfo.a_fabrication!=""
+                                    ){
+                                        window.isEnabled=true
+                                        addTransfo=false
+                                    } else empty=true
+
                                 }
                         ) {
                             Text(
@@ -370,14 +383,18 @@ list.forEachIndexed{position,item->
                             "Marque",
                             "",
                             10,
-                            {},
+                            {
+                            transfo.marque=it
+                            },
                             Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
                         )
                         EmptyTextField(
                             "N° série",
                             "",
                             25,
-                            {},
+                            {
+                            transfo.n_serie=it
+                            },
                             Modifier.fillMaxWidth()
                         )
                     }
@@ -386,21 +403,27 @@ list.forEachIndexed{position,item->
                             "Tension",
                             "",
                             10,
-                            {},
+                            {
+                            transfo.tension=it
+                            },
                             Modifier.padding(end = 10.dp)
                         )
                         EmptyTextField(
                             "Puissance",
                             "",
                             10,
-                            {},
+                            {
+                            transfo.puissance=it
+                            },
                             Modifier.padding(end = 10.dp)
                         )
                         EmptyTextField(
                             "Année de fabrication",
                             "",
                             4,
-                            {},
+                            {
+                            transfo.a_fabrication=it
+                            },
                             Modifier
                         )
                     }
@@ -409,7 +432,9 @@ list.forEachIndexed{position,item->
                         "Fournisseur",
                        "",
                         30,
-                        {},
+                        {
+                        transfo.fournisseur=it
+                        },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))

@@ -52,7 +52,8 @@ fun Comptes(window: ComposeWindow) {
                 text = "Nouveau",
                 tintColor = Color.White,
                 background = Color(0xff0073FF),
-                {addAccount=true}
+                {window.isEnabled=false
+                    addAccount=true}
             )
         }
         val horizontal_state= rememberScrollState()
@@ -129,6 +130,8 @@ fun Comptes(window: ComposeWindow) {
                 modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
                 contentAlignment = Alignment.TopEnd
             ) {
+                var empty by remember { mutableStateOf(false) }
+                val compte=Compte()
                 val scrollState = rememberScrollState()
                 Column(
                     modifier = Modifier
@@ -137,13 +140,28 @@ fun Comptes(window: ComposeWindow) {
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                         Text("Créer un compte", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                         if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
                         Box(contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(10.dp))
                                 .padding(horizontal = 5.dp)
                                 .shadow(2.dp, RoundedCornerShape(20.dp))
                                 .background(Color(0xff0073FF))
-                                .clickable { addAccount = false }
+                                .clickable {
+                                    if(
+                                        compte.District!="" &&
+                                        compte.Email!="" &&
+                                        compte.Nom!="" &&
+                                        compte.Prenom!="" &&
+                                        compte.Nom_utilisateur!="" &&
+                                        compte.Type!="" &&
+                                        compte.Fonction!=""&&
+                                        compte.mdps!=""
+                                    )
+                                    {window.isEnabled=true
+                                        addAccount = false}
+                                    else empty=true
+                                }
                         ) {
                             Text(
                                 "Créer",
@@ -162,7 +180,9 @@ fun Comptes(window: ComposeWindow) {
                             "District",
                             "",
                             10,
-                            {},
+                            {
+                            compte.District=it
+                            },
                             Modifier.fillMaxWidth(.3f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
@@ -170,15 +190,15 @@ fun Comptes(window: ComposeWindow) {
                             "Nom d'utilisateur",
                             "",
                             10,
-                            {},
+                            {compte.Nom_utilisateur=it},
                             Modifier.fillMaxWidth(.5f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         DropDown(
                             listOf("Gestionnaire des transfo","Visiteur"),
                             "Type",
-                            {_,_ ->
-
+                            {text,_ ->
+                            compte.Type=text
                             },
                             true,
                             Modifier
@@ -192,7 +212,9 @@ fun Comptes(window: ComposeWindow) {
                             "Nom",
                             "",
                             10,
-                            {},
+                            {
+                            compte.Nom=it
+                            },
                             Modifier.fillMaxWidth(.3f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
@@ -200,7 +222,9 @@ fun Comptes(window: ComposeWindow) {
                             "Prénom",
                             "",
                             10,
-                            {},
+                            {
+                            compte.Prenom=it
+                            },
                             Modifier.fillMaxWidth(.5f)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
@@ -208,7 +232,9 @@ fun Comptes(window: ComposeWindow) {
                             "Fonction",
                             "",
                             10,
-                            {},
+                            {
+                            compte.Fonction=it
+                            },
                             Modifier.fillMaxWidth()
                         )
                     }
@@ -217,7 +243,9 @@ fun Comptes(window: ComposeWindow) {
                         "Email",
                         "",
                         30,
-                        {},
+                        {
+                        compte.Email=it
+                        },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(30.dp))
@@ -225,7 +253,9 @@ fun Comptes(window: ComposeWindow) {
                         "Mot de passe",
                         "",
                         30,
-                        {},
+                        {
+                        compte.mdps=it
+                        },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(50.dp))

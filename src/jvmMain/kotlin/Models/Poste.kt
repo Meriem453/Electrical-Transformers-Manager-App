@@ -1,10 +1,10 @@
 package Models
 
 data class Poste(
-    val District:String,
-    val Designation:String,
-    val Numero:String,
-    val Nature:String,
-    val n_serie_transfo:String,
-    val marque_transfo:String,
+    var District:String="",
+    var Designation:String="",
+    var Numero:String="",
+    var Nature:String="",
+    var n_serie_transfo:String="",
+    var marque_transfo:String="",
 )
