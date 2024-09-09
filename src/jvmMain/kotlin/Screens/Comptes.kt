@@ -9,6 +9,7 @@ import VIewModels.ComptesVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -69,13 +70,13 @@ fun Comptes(window: ComposeWindow) {
                 .fillMaxWidth()
         ) {
             val list= listOf(
-                "District","Nom d'utilisateur","Type","Nom","Prenom","Fonction","Email"
+                "District","Nom d'utilisateur","Type","Nom","Prenom","Fonction","Email",null
             )
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
                 list.forEachIndexed{position,item->
                     Column {
-                        Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
+                        if(item!=null)Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))else Box(Modifier.height(57.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
                             var hover by remember { mutableStateOf(false) }
                             vm.filteredComptes.forEachIndexed{pos, compte->
@@ -107,6 +108,7 @@ fun Comptes(window: ComposeWindow) {
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
+                                    if(item==null) Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(11.dp))
                                 }
                             }
                         }

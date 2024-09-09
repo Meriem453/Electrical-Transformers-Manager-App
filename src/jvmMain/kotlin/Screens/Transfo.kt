@@ -40,7 +40,7 @@ fun Transfo(window: ComposeWindow,transfoHistory:(n_serie:String)->Unit) {
     var currentTransfo: Transformateur? by remember { mutableStateOf(null) }
 
 Column (modifier = Modifier.fillMaxSize()){
-
+    var filter by remember { mutableStateOf(false) }
     Row(verticalAlignment = Alignment.CenterVertically) {
         SearchBar(
             hint = "N° de série",
@@ -61,10 +61,17 @@ Column (modifier = Modifier.fillMaxSize()){
             icon = "icons/Group.svg",
             text = "Filtrer",
             tintColor = Color(0xff0073FF),
-            background = Color.White
+            background =if(filter) Color(0xffE5F1FF) else Color.White
         ) {
-            filterTransfo = true
-            window.isEnabled = false
+            if(filter){
+                vm.filterTransfo(Transformateur())
+                filter=false
+            }else{
+                filter=true
+                filterTransfo = true
+                window.isEnabled = false
+            }
+
         }
         Button(
             icon = "icons/add.svg",
@@ -199,6 +206,7 @@ list.forEachIndexed{position,item->
                 contentAlignment = Alignment.TopEnd
             ) {
                 var scrollState = rememberScrollState()
+                var empty by remember { mutableStateOf(false) }
            Column(
                modifier = Modifier
                    .padding(20.dp)
@@ -206,6 +214,8 @@ list.forEachIndexed{position,item->
            ) {
                Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                    Text("Modifier un transformateur", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                   if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
+
                    Box(contentAlignment = Alignment.Center,
                        modifier = Modifier
                            .clip(RoundedCornerShape(10.dp))
@@ -213,9 +223,19 @@ list.forEachIndexed{position,item->
                            .shadow(2.dp, RoundedCornerShape(20.dp))
                            .background(Color(0xff0073FF))
                            .clickable {
-                               currentTransfo=null
-                               window.isEnabled=true
-                               editTransfo=false
+                               println(currentTransfo)
+                               if(
+                                   currentTransfo!=null &&
+                                   currentTransfo!!.marque!=""&&
+                                   currentTransfo!!.n_serie!=""&&
+                                   currentTransfo!!.fournisseur!=""&&
+                                   currentTransfo!!.tension!=""&&
+                                   currentTransfo!!.puissance!=""&&
+                                   currentTransfo!!.a_fabrication!=""
+                               ){  currentTransfo=null
+                                   window.isEnabled=true
+                                   editTransfo=false
+                               } else empty=true
                            }
                    ) {
                        Text(
@@ -232,14 +252,18 @@ list.forEachIndexed{position,item->
                        "Marque",
                        currentTransfo?.marque?:"",
                        10,
-                       {},
+                       {
+                       currentTransfo?.marque=it
+                       },
                        Modifier.fillMaxWidth(.4f).padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "N° série",
                        currentTransfo?.n_serie?:"",
                        25,
-                       {},
+                       {
+                           currentTransfo?.n_serie=it
+                       },
                        Modifier.fillMaxWidth()
                    )
                }
@@ -248,21 +272,27 @@ list.forEachIndexed{position,item->
                        "Tension",
                        currentTransfo?.tension?:"",
                        10,
-                       {},
+                       {
+                           currentTransfo?.tension=it
+
+                       },
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Puissance",
                        currentTransfo?.puissance?:"",
                        10,
-                       {},
+                       {
+                           currentTransfo?.puissance=it
+                       },
                        Modifier.padding(end = 10.dp)
                    )
                    EmptyTextField(
                        "Année de fabrication",
                        currentTransfo?.a_fabrication?:"",
                        4,
-                       {},
+                       {                       currentTransfo?.a_fabrication=it
+                       },
                        Modifier
                    )
                }
@@ -271,7 +301,10 @@ list.forEachIndexed{position,item->
                    "Fournisseur",
                    currentTransfo?.fournisseur?:"",
                    30,
-                   {},
+                   {
+                       currentTransfo?.fournisseur=it
+
+                   },
                    Modifier.fillMaxWidth()
                )
                Spacer(modifier = Modifier.height(20.dp))

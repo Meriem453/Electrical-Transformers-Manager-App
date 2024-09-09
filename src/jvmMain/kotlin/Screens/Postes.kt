@@ -127,7 +127,7 @@ fun Postes(window: ComposeWindow) {
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
-                                    if(item==null) Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(10.dp))
+                                    if(item==null) Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(11.dp))
                                 }
                             }
                         }

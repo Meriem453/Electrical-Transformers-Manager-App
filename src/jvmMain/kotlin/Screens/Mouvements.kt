@@ -55,6 +55,7 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
 
         var currentMvt:Mouvement? by remember { mutableStateOf(null) }
         Row(verticalAlignment = Alignment.CenterVertically) {
+            var filter by remember { mutableStateOf(false) }
             SearchBar(
                 hint = "N° de série transfo",
                 initText = transfo,
@@ -74,10 +75,15 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                 icon = "icons/Group.svg",
                 text = "Filtrer",
                 tintColor = Color(0xff0073FF),
-                background = Color.White
+                background = if(filter) Color(0xffE5F1FF) else Color.White
             ) {
+                if(filter){
+                    vm.filterMvt(Mouvement(),"","")
+                    filter=false
+                }else{
+                    filter=true
                 window.isEnabled = false
-                filterMvt = true
+                filterMvt = true}
             }
             Screens.Components.Button(
                 icon = "icons/add.svg",
