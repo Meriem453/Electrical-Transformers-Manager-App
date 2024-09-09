@@ -85,14 +85,16 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                 window.isEnabled = false
                 filterMvt = true}
             }
-            Screens.Components.Button(
-                icon = "icons/add.svg",
-                text = "Nouveau",
-                tintColor = Color.White,
-                background = Color(0xff0073FF)
-            ) {
-                window.isEnabled = false
-                findTransfo = true
+            if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") {
+                Screens.Components.Button(
+                    icon = "icons/add.svg",
+                    text = "Nouveau",
+                    tintColor = Color.White,
+                    background = Color(0xff0073FF)
+                ) {
+                    window.isEnabled = false
+                    findTransfo = true
+                }
             }
         }
 

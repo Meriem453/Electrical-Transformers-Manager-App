@@ -1,5 +1,6 @@
 package Screens
 
+import Auth
 import Models.District
 import Models.Poste
 import Screens.Components.*
@@ -49,14 +50,18 @@ fun Districts(window: ComposeWindow) {
             Refresh {
                 vm.getAllDistricts()
             }
-            Button(
-                icon = "icons/add.svg",
-                text = "Nouveau",
-                tintColor = Color.White,
-                background = Color(0xff0073FF),
-                {window.isEnabled=false
-                    addDistrict=true}
-            )
+            if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") {
+                Button(
+                    icon = "icons/add.svg",
+                    text = "Nouveau",
+                    tintColor = Color.White,
+                    background = Color(0xff0073FF),
+                    {
+                        window.isEnabled = false
+                        addDistrict = true
+                    }
+                )
+            }
         }
         val horizontal_state= rememberScrollState()
         val vertical_state= rememberScrollState()

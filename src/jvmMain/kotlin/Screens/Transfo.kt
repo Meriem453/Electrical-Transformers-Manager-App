@@ -76,14 +76,16 @@ Column (modifier = Modifier.fillMaxSize()){
             }
 
         }
-        Button(
-            icon = "icons/add.svg",
-            text = "Nouveau",
-            tintColor = Color.White,
-            background = Color(0xff0073FF)
-        ) {
-            addTransfo = true
-            window.isEnabled = false
+        if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") {
+            Button(
+                icon = "icons/add.svg",
+                text = "Nouveau",
+                tintColor = Color.White,
+                background = Color(0xff0073FF)
+            ) {
+                addTransfo = true
+                window.isEnabled = false
+            }
         }
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {

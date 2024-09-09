@@ -59,6 +59,7 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                 }
             }) {
                 items.forEachIndexed { index, item ->
+                    if(index!=5 || Auth.currentUser!!.role=="Admin")
                     NavigationRailItem(
                         label = {
                             Text(
@@ -103,11 +104,11 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                         verticalAlignment = Alignment.CenterVertically
                         ) {
                         Column (modifier = Modifier.padding(30.dp)){
-                            Text("Name", fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
-                            Text("Role", fontSize = 14.sp, color = Color.Gray)
+                            Text(Auth.currentUser!!.email, fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
+                            Text(Auth.currentUser!!.role, fontSize = 14.sp, color = Color.Gray)
                         }
 
-                        Row (modifier = Modifier.padding(30.dp).clip(RoundedCornerShape(20.dp)).clickable { Logout() }, verticalAlignment = Alignment.CenterVertically){
+                        Row (modifier = Modifier.padding(30.dp).clip(RoundedCornerShape(20.dp)).clickable {  Auth.currentUser=null ; Logout() }, verticalAlignment = Alignment.CenterVertically){
                             Icon(painterResource("icons/login.svg"),"", tint = Color.Gray, modifier = Modifier.padding(20.dp))
                             Text("Deconnexion", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.Gray,modifier = Modifier.padding(end = 20.dp))
                         }

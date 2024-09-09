@@ -1,5 +1,6 @@
 package Screens
 
+import Auth
 import Models.Poste
 import Screens.Components.*
 import VIewModels.PostesVM
@@ -68,14 +69,18 @@ fun Postes(window: ComposeWindow) {
                 background = Color.White,
                 {}
             )
-            Button(
-                icon = "icons/add.svg",
-                text = "Nouveau",
-                tintColor = Color.White,
-                background = Color(0xff0073FF),
-                {window.isEnabled=false
-                    addPoste=true}
-            )
+            if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") {
+                Button(
+                    icon = "icons/add.svg",
+                    text = "Nouveau",
+                    tintColor = Color.White,
+                    background = Color(0xff0073FF),
+                    {
+                        window.isEnabled = false
+                        addPoste = true
+                    }
+                )
+            }
         }
         val horizontal_state= rememberScrollState()
         val vertical_state= rememberScrollState()
@@ -96,7 +101,7 @@ fun Postes(window: ComposeWindow) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
                 list.forEachIndexed{position,item->
                     Column {
-                       if(item!=null) Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp)) else Box(Modifier.height(57.dp))
+                       if(item!=null) Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp)) else if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") Box(Modifier.height(57.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
                             var hover by remember { mutableStateOf(false) }
                             vm.filteredPostes.forEachIndexed{pos, poste->
@@ -127,7 +132,7 @@ fun Postes(window: ComposeWindow) {
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
-                                    if(item==null) Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(11.dp))
+                                    if(item==null && Auth.currentUser!!.role=="Gestionnaire de transformateurs") Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(11.dp))
                                 }
                             }
                         }

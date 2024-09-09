@@ -1,6 +1,8 @@
 package Screens
 
+import Auth
 import Theme
+import VIewModels.LoginVM
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +28,8 @@ import androidx.compose.ui.unit.sp
 fun Login(window: ComposeWindow,login:()->Unit){
     var user_name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val vm=LoginVM
+    var error by remember { mutableStateOf(false) }
     Row (
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +94,10 @@ Column {
                     .shadow(2.dp, RoundedCornerShape(20.dp))
                     .background(Color(0xff0073FF))
                     .clickable {
+                        vm.login(email = user_name,password)
+                        if(Auth.currentUser!=null)
                         login()
+                        else error=true
                     }
             ) {
                 Text(
@@ -101,6 +108,7 @@ Column {
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
                 )
             }
+            if(error) Text("Veuillez réessayer", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
 
         }
     }
