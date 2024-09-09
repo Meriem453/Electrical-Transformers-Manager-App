@@ -1,10 +1,7 @@
 package Screens
 
-import Screens.Components.Button
-import Screens.Components.DropDown
-import Screens.Components.EmptyTextField
-import Screens.Components.SearchBar
 import Models.Compte
+import Screens.Components.*
 import VIewModels.ComptesVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -48,6 +45,9 @@ fun Comptes(window: ComposeWindow) {
                 },
                 modifier = Modifier.weight(1f)
             )
+            Refresh {
+                vm.getAllComptes()
+            }
             Button(
                 icon = "icons/add.svg",
                 text = "Nouveau",

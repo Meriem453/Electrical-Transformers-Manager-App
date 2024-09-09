@@ -3,10 +3,7 @@ package Screens
 
 import Models.Mouvement
 import Models.Transformateur
-import Screens.Components.DropDown
-import Screens.Components.EmptyTextField
-import Screens.Components.FileSection
-import Screens.Components.SearchBar
+import Screens.Components.*
 import Theme
 import VIewModels.MouvmntVM
 import androidx.compose.foundation.*
@@ -64,6 +61,9 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                 },
                 modifier = Modifier.weight(1f)
             )
+            Refresh {
+                vm.getAllMvts()
+            }
             Screens.Components.Button(
                 icon = "icons/print.svg",
                 text = "Imprimer",

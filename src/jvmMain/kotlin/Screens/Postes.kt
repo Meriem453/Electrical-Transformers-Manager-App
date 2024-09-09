@@ -1,10 +1,7 @@
 package Screens
 
-import Screens.Components.Button
-import Screens.Components.DropDown
-import Screens.Components.EmptyTextField
-import Screens.Components.SearchBar
 import Models.Poste
+import Screens.Components.*
 import VIewModels.PostesVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -53,6 +50,9 @@ fun Postes(window: ComposeWindow) {
                 },
                 modifier = Modifier.weight(1f)
             )
+            Refresh {
+                vm.getAllPostes()
+            }
             DropDown(
                 listOf("El-Harrach","Rouiba"),
                 "District",

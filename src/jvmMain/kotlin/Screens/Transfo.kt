@@ -50,6 +50,9 @@ Column (modifier = Modifier.fillMaxSize()){
                             },
             modifier = Modifier.weight(1f)
         )
+        Refresh {
+            vm.getAllTransfo()
+        }
         Button(
             icon = "icons/print.svg",
             text = "Imprimer",

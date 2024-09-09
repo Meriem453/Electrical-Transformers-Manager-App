@@ -1,11 +1,8 @@
 package Screens
 
-import Screens.Components.Button
-import Screens.Components.DropDown
-import Screens.Components.EmptyTextField
-import Screens.Components.SearchBar
 import Models.District
 import Models.Poste
+import Screens.Components.*
 import VIewModels.DistrictVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -49,6 +46,9 @@ fun Districts(window: ComposeWindow) {
                 },
                 modifier = Modifier.weight(1f)
             )
+            Refresh {
+                vm.getAllDistricts()
+            }
             Button(
                 icon = "icons/add.svg",
                 text = "Nouveau",
