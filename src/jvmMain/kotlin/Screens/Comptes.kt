@@ -57,23 +57,21 @@ fun Comptes(window: ComposeWindow) {
                     addAccount=true}
             )
         }
-        val horizontal_state= rememberScrollState()
+
         val vertical_state= rememberScrollState()
         var hoveredDistPos:Int? by remember { mutableStateOf(null) }
 
         Column(
             modifier = Modifier
-                .weight(1f)
+                .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
                 .background(Color.White)
-                .horizontalScroll(horizontal_state)
-                .fillMaxWidth()
         ) {
             val list= listOf(
                 "District","Nom d'utilisateur","Type","Nom","Prenom","Fonction","Email",null
             )
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
+            Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween){
                 list.forEachIndexed{position,item->
                     Column {
                         if(item!=null)Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))else Box(Modifier.height(57.dp))
@@ -94,7 +92,7 @@ fun Comptes(window: ComposeWindow) {
                                         hover = false
                                         hoveredDistPos = null
 
-                                    }).fillMaxWidth()) {
+                                    })) {
                                     Text(
                                         when(position){
                                             0->compte.District
@@ -116,7 +114,6 @@ fun Comptes(window: ComposeWindow) {
                 }
             }
         }
-        HorizontalScrollbar(rememberScrollbarAdapter(horizontal_state))
     }
     if(addAccount){
         Window(onCloseRequest = {

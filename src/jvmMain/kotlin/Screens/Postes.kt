@@ -82,7 +82,6 @@ fun Postes(window: ComposeWindow) {
                 )
             }
         }
-        val horizontal_state= rememberScrollState()
         val vertical_state= rememberScrollState()
         var hoveredPostePos:Int? by remember { mutableStateOf(null) }
 
@@ -91,14 +90,13 @@ fun Postes(window: ComposeWindow) {
                 .weight(1f)
                 .clip(RoundedCornerShape(20.dp))
                 .background(Color.White)
-                .horizontalScroll(horizontal_state)
                 .fillMaxWidth()
         ) {
             val list= listOf(
                 "District","Designation","Numero","Nature","N° série transfo","Marque transfo",null
             )
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
                 list.forEachIndexed{position,item->
                     Column {
                        if(item!=null) Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp)) else if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") Box(Modifier.height(57.dp))
@@ -119,7 +117,7 @@ fun Postes(window: ComposeWindow) {
                                         hover = false
                                         hoveredPostePos = null
 
-                                    }).fillMaxWidth()) {
+                                    })) {
                                     Text(
                                         when(position){
                                             0->poste.District
@@ -140,7 +138,6 @@ fun Postes(window: ComposeWindow) {
                 }
             }
         }
-        HorizontalScrollbar(rememberScrollbarAdapter(horizontal_state))
     }
 
     if(addPoste){

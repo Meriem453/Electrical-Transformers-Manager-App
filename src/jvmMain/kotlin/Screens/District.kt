@@ -63,7 +63,6 @@ fun Districts(window: ComposeWindow) {
                 )
             }
         }
-        val horizontal_state= rememberScrollState()
         val vertical_state= rememberScrollState()
         var hoveredDistPos:Int? by remember { mutableStateOf(null) }
 
@@ -72,14 +71,13 @@ fun Districts(window: ComposeWindow) {
                 .weight(1f)
                 .clip(RoundedCornerShape(20.dp))
                 .background(Color.White)
-                .horizontalScroll(horizontal_state)
                 .fillMaxWidth()
         ) {
             val list= listOf(
 "Centre","District","Init","Code agence","Code centre"
             )
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
                 list.forEachIndexed{position,item->
                     Column {
                         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
@@ -100,7 +98,7 @@ fun Districts(window: ComposeWindow) {
                                         hover = false
                                         hoveredDistPos = null
 
-                                    }).fillMaxWidth()) {
+                                    })) {
                                     Text(
                                         when(position){
                                             0->dist.centre
@@ -118,7 +116,6 @@ fun Districts(window: ComposeWindow) {
                 }
             }
         }
-        HorizontalScrollbar(rememberScrollbarAdapter(horizontal_state))
     }
     if(addDistrict){
         Window(onCloseRequest = {
