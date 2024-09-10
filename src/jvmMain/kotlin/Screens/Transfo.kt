@@ -6,7 +6,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -25,13 +24,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.awt.FileDialog
+import java.io.File
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Transfo(window: ComposeWindow,transfoHistory:(n_serie:String)->Unit) {
+fun Transfo(parentWindow: ComposeWindow, transfoHistory:(n_serie:String)->Unit) {
 
     val vm= TransfoVM
     var filterTransfo by remember { mutableStateOf(false) }
@@ -72,7 +71,7 @@ Column (modifier = Modifier.fillMaxSize()){
             }else{
                 filter=true
                 filterTransfo = true
-                window.isEnabled = false
+                parentWindow.isEnabled = false
             }
 
         }
@@ -83,8 +82,9 @@ Column (modifier = Modifier.fillMaxSize()){
                 tintColor = Color.White,
                 background = Color(0xff0073FF)
             ) {
-                addTransfo = true
-                window.isEnabled = false
+
+                addTransfo=true
+                //parentWindow.isEnabled = false
             }
         }
     }
@@ -167,7 +167,7 @@ list.forEachIndexed{position,item->
                     .clickable {
                         currentTransfo=transfo
                         editTransfo=true
-                        window.isEnabled=false
+                        parentWindow.isEnabled=false
                     }
                 ) {
                 Text(
@@ -198,7 +198,7 @@ list.forEachIndexed{position,item->
     }
     if(editTransfo){
         Window(onCloseRequest = {
-            window.isEnabled=true
+            parentWindow.isEnabled=true
             editTransfo=false},
             resizable = false,
             state = rememberWindowState(
@@ -238,7 +238,7 @@ list.forEachIndexed{position,item->
                                    currentTransfo!!.puissance!=""&&
                                    currentTransfo!!.a_fabrication!=""
                                ){  currentTransfo=null
-                                   window.isEnabled=true
+                                   parentWindow.isEnabled=true
                                    editTransfo=false
                                } else empty=true
                            }
@@ -342,7 +342,7 @@ list.forEachIndexed{position,item->
                             .shadow(2.dp, RoundedCornerShape(10.dp))
                             .background(Color(0xff0073FF))
                             .clickable {
-                                window.isEnabled=true
+                                parentWindow.isEnabled=true
                                 transfoHistory(currentTransfo!!.n_serie)
                                 editTransfo=false
                             }
@@ -363,7 +363,7 @@ list.forEachIndexed{position,item->
     }
     if(addTransfo){
         Window(onCloseRequest = {
-            window.isEnabled=true
+            parentWindow.isEnabled=true
             addTransfo=false},
             resizable = false,
             state = rememberWindowState(
@@ -371,6 +371,13 @@ list.forEachIndexed{position,item->
                 size = DpSize(1000.dp,700.dp)
             ),icon = painterResource("images/sonelgaz.png"), title = "Créer un transformateur"
         ) {
+            var openFile by remember { mutableStateOf(false) }
+
+            var dir:String?=null
+            FileDialog(parentWindow, "", FileDialog.LOAD).apply {
+                isVisible = openFile
+                dir=directory+file
+            }
             Box(
                 modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
                 contentAlignment = Alignment.TopEnd
@@ -401,7 +408,7 @@ list.forEachIndexed{position,item->
                                         transfo.puissance!=""&&
                                         transfo.a_fabrication!=""
                                     ){
-                                        window.isEnabled=true
+                                        parentWindow.isEnabled=true
                                         addTransfo=false
                                     } else empty=true
 
@@ -479,21 +486,27 @@ list.forEachIndexed{position,item->
                     FileSection(
                         "Fiche garantie",
                         "",
-                        {},
+                        {
+                        openFile=true
+                        },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     FileSection(
                         "Rapport PV",
                         "",
-                        {},
+                        {
+                           openFile=true
+                        },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     FileSection(
                         "Plaque signalitique",
                         "",
-                        {},
+                        {
+                        openFile=true
+                        },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(50.dp))
@@ -504,7 +517,7 @@ list.forEachIndexed{position,item->
             }
     if(filterTransfo){
         Window(onCloseRequest = {
-            window.isEnabled=true
+            parentWindow.isEnabled=true
             filterTransfo=false},
             resizable = false,
             state = rememberWindowState(
@@ -533,7 +546,7 @@ list.forEachIndexed{position,item->
                                 .shadow(2.dp, RoundedCornerShape(20.dp))
                                 .background(Color(0xff0073FF))
                                 .clickable {
-                                    window.isEnabled=true
+                                    parentWindow.isEnabled=true
                                     vm.filterTransfo(transfo)
                                     filterTransfo = false }
                         ) {
@@ -602,7 +615,17 @@ list.forEachIndexed{position,item->
             }
         }
     }
+    //if(openFile) openFileDialog(parentWindow,"")
     }
+
+fun openFileDialog(window: ComposeWindow, title: String): String? {
+    var dir:String?=null
+    FileDialog(window, title, FileDialog.LOAD).apply {
+        isVisible = true
+        dir=directory+file
+    }
+    return dir
+}
 
 
 
