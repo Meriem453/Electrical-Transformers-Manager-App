@@ -33,7 +33,14 @@ const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
 
-db.products = require('./productModel.js')(sequelize, DataTypes)
+db.transformateur = require('./Transformateur.js')(sequelize, DataTypes)
+db.avarie = require('./Avarie.js')(sequelize, DataTypes)
+db.compte = require('./Compte.js')(sequelize, DataTypes)
+db.district = require('./DIstrict.js')(sequelize, DataTypes)
+db.entretien = require('./Entretien.js')(sequelize, DataTypes)
+db.mouvement = require('./Mouvement.js')(sequelize, DataTypes)
+db.poste = require('./Poste.js')(sequelize, DataTypes)
+db.vente = require('./Vente.js')(sequelize, DataTypes)
 
 
 
@@ -44,16 +51,30 @@ db.sequelize.sync({ force: false })
 
 
 
-// 1 to Many Relation
-
-// db.products.belongsTo(db.supplier,{
-//     foreignKey:'supplier',
-//     as:'supplier_',
-//     allowNull:false,
-//     onDelete:"CASCADE",
-//     onUpdate:"CASCADE",
-// })
 
 
+db.mouvement.belongsTo(db.transformateur,{
+    foreignKey:'transformateur',
+    as:'transformateur_',
+    allowNull:false,
+    onDelete:"CASCADE",
+    onUpdate:"CASCADE",
+})
+
+db.mouvement.belongsTo(db.avarie,{
+    foreignKey:'avarie',
+    as:'avarie_',
+    allowNull:false,
+    onDelete:"SET NULL",
+    onUpdate:"CASCADE",
+})
+
+db.mouvement.belongsTo(db.entretien,{
+    foreignKey:'entretien',
+    as:'entretien_',
+    allowNull:false,
+    onDelete:"SET NULL",
+    onUpdate:"CASCADE",
+})
 
 module.exports = db

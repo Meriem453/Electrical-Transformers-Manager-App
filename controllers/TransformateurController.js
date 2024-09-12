@@ -3,12 +3,8 @@ const db = require('../models')
 
 
 // create main Model
-const Product = db.products
-const Category=db.category
-const Command=db.command
-const ExpDate=db.expdate
-const ProductGroup=db.productgroup
-const Supplier=db.supplier
+const Transformateur = db.transformateur
+
 
 const { sequelize } = require('../models'); // Import the Sequelize instance
 const { QueryTypes } = require('sequelize');
@@ -18,7 +14,7 @@ const { QueryTypes } = require('sequelize');
 
 
 
-const addProduct = async (req, res) => {
+const addTransformateur = async (req, res) => {
     try {
         const { name, price, quantity, benefit,barcode,supplier} = req.body;
 
@@ -167,7 +163,7 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
     getProductOfSupp,
-    addProduct,
+    addProduct: addTransformateur,
     getAllProducts,
     updateProduct,
     deleteProduct,
