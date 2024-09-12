@@ -24,17 +24,17 @@ module.exports = (sequelize, DataTypes) => {
         fournisseur: {
             type: DataTypes.STRING,
         },
-        // district: {
-        //     type: DataTypes.STRING,
-        //     allowNull:false,
-        // },
+        district: {
+            type: DataTypes.STRING,
+            allowNull:false,
+        },
         lieu_actuel: {
             type: DataTypes.STRING,
             allowNull:false,
         },
-        // poste: {
-        //     type: DataTypes.STRING,
-        // },
+        poste: {
+            type: DataTypes.STRING,
+        },
         fiche_garantie: {
             type: DataTypes.STRING,
         },

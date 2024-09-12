@@ -8,163 +8,159 @@ const Transformateur = db.transformateur
 
 const { sequelize } = require('../models'); // Import the Sequelize instance
 const { QueryTypes } = require('sequelize');
-// main work
+const {upload} = require("../middlewares/filesMiddleware");
+const fs = require('fs');
 
-// 1. create product
 
-
+const uploadFiles = upload.fields([
+    { name: 'fiche_garantie', maxCount: 1 },
+    { name: 'pv_d_essaie', maxCount: 1 },
+    { name: 'plaque_signalitique', maxCount: 1 }
+]);
 
 const addTransformateur = async (req, res) => {
     try {
-        const { name, price, quantity, benefit,barcode,supplier} = req.body;
+        // Middleware to handle file uploads
+        uploadFiles(req, res, async (err) => {
+            if (err) {
+                return res.status(400).send('Error uploading files: ' + err.message);
+            }
 
-        const query = `
-            INSERT INTO products (name, price, quantity, benefit,barcode,supplier)
-            VALUES (:name, :price, :quantity, :benefit,:barcode,:supplier)
-        `;
+            // Extract form fields and files
+            const { marque, n_serie, tension, puissance, a_fabrication, fournisseur, district, lieu_actuel, poste } = req.body;
+            const { fiche_garantie, pv_d_essaie, plaque_signalitique } = req.files;
 
-        const values = {name, price, quantity, benefit,barcode,supplier };
+            // Extract file paths (or set to null if not provided)
+            const filePathFicheGarantie = fiche_garantie ? fiche_garantie[0].path : null;
+            const filePathPvDEssaie = pv_d_essaie ? pv_d_essaie[0].path : null;
+            const filePathPlaqueSignalitique = plaque_signalitique ? plaque_signalitique[0].path : null;
 
-        // Execute the raw SQL query
-        const [product] = await sequelize.query(query, {
-            replacements: values,
-            type: QueryTypes.INSERT,
-            raw: true,
+            // Create Transformateur record
+            let newTransfo = await Transformateur.create({
+                marque,
+                n_serie,
+                tension,
+                puissance,
+                a_fabrication,
+                fournisseur,
+                district,
+                lieu_actuel,
+                poste,
+                fiche_garantie: filePathFicheGarantie,
+                pv_d_essaie: filePathPvDEssaie,
+                plaque_signalitique: filePathPlaqueSignalitique
+            });
+
+            if (!newTransfo) {
+                return res.status(401).send('Error creating transfo.');
+            }
+
+            res.status(200).json(newTransfo);
         });
-
-        console.log('Product:', product);
-
-        res.status(200).json({ product }); // Send the product data as JSON
     } catch (error) {
-        console.error('Error adding product:', error);
+        console.error('Error creating transfo:', error);
         res.status(500).send('Internal Server Error');
     }
 };
 
-
-
-
-
-
-
-// 2. get all products
-
-const getAllProducts = async (req, res) => {
+const getAllTransfo = async (req, res) => {
     try {
-        const query = 'SELECT * FROM products';
-        const products = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
+        let allTransfos= await Transformateur.findAll()
+        if(!allTransfos){
+            res.status(401).send('Error getting transfos')
+        }else{
+            res.status(200).json(allTransfos);
+        }
 
-        res.status(200).send(products);
-        console.log(products)
-    } catch (error) {
-        console.error('Error fetching products:', error);
+    }
+    catch (error) {
+        console.error('Error getting transfos:', error);
         res.status(500).send('Internal Server Error');
     }
 };
-
-// 3. get single product
-const getProductOfSupp = async (req, res) => {
+const updateTransfo = async (req, res) => {
     try {
-        const id = req.query.id;
-        const query = 'SELECT * FROM products WHERE supplier = :id';
-        const product = await sequelize.query(query, {
-            type: sequelize.QueryTypes.SELECT,
-            replacements: { id: id },
+        uploadFiles(req, res, async (err) => {
+            if (err) {
+                return res.status(400).send('Error uploading files: ' + err.message);
+            }
+
+
+            const {
+                id,
+                marque,
+                n_serie,
+                tension,
+                puissance,
+                a_fabrication,
+                fournisseur,
+                district,
+                lieu_actuel,
+                poste
+            } = req.body;
+            const {fiche_garantie, pv_d_essaie, plaque_signalitique} = req.files;
+
+
+            const transfo = await Transformateur.findByPk(id);
+            if (!transfo) {
+                return res.status(404).send('Transfo not found');
+            }
+
+            // Delete old files if new files are provided
+            const deleteFile = (filePath) => {
+                if (filePath && fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            };
+
+            if (fiche_garantie) {
+                deleteFile(transfo.fiche_garantie);
+            }
+            if (pv_d_essaie) {
+                deleteFile(transfo.pv_d_essaie);
+            }
+            if (plaque_signalitique) {
+                deleteFile(transfo.plaque_signalitique);
+            }
+
+            const filePathFicheGarantie = fiche_garantie ? fiche_garantie[0].path : null;
+            const filePathPvDEssaie = pv_d_essaie ? pv_d_essaie[0].path : null;
+            const filePathPlaqueSignalitique = plaque_signalitique ? plaque_signalitique[0].path : null;
+
+            const [affectedRows] = await Transformateur.update({
+                marque: marque,
+                n_serie: n_serie,
+                tension: tension,
+                puissance: puissance,
+                a_fabrication: a_fabrication,
+                fournisseur: fournisseur,
+                lieu_actuel: lieu_actuel,
+                district: district,
+                poste: poste,
+                fiche_garantie: filePathFicheGarantie,
+                pv_d_essaie: filePathPvDEssaie,
+                plaque_signalitique: filePathPlaqueSignalitique
+            }, {
+                where: {id: id}
+            });
+
+
+            if (affectedRows > 0) {
+                res.status(200).send('Transfo updated successfully');
+            } else {
+                res.status(404).send('Transfo not found');
+            }
         });
-
-        if (product.length === 0) {
-            res.status(404).send('Product not found');
-        } else {
-            res.status(200).send(product);
-        }
     } catch (error) {
-        console.error('Error fetching product:', error);
-        res.status(500).send('Internal Server Error');
-    }
-
-}
-
-const getOneProduct = async (req, res) => {
-
-    try {
-        const id = req.params.id;
-        const query = 'SELECT * FROM products WHERE id = :id';
-        const product = await sequelize.query(query, {
-            type: sequelize.QueryTypes.SELECT,
-            replacements: { id: id },
-        });
-
-        if (product.length === 0) {
-            res.status(404).send('Product not found');
-        } else {
-            res.status(200).send(product[0]);
-        }
-    } catch (error) {
-        console.error('Error fetching product:', error);
-        res.status(500).send('Internal Server Error');
-    }
-
-}
-
-// 4. update Product
-
-const updateProduct = async (req, res) => {
-    try {
-
-        const updatedData = req.body;
-
-        const query = `
-            UPDATE products
-            SET name = ?, price = ?, quantity = ?, benefit = ?,barecode = ?
-            WHERE id = ?
-        `;
-
-        const [rowsUpdated, _] = await sequelize.query(query, {
-            replacements: [updatedData.name, updatedData.price, updatedData.quantity, updatedData.benefit,updatedData.barecode, updatedData.id],
-            type: sequelize.QueryTypes.UPDATE,
-            returning: true,
-        });
-
-        if (rowsUpdated === 0) {
-            res.status(404).send('Product not found');
-        } else {
-            res.status(200).send('Product updated successfully');
-        }
-    } catch (error) {
-        console.error('Error updating product:', error);
-        res.status(500).send('Internal Server Error');
-    }
-}
-
-// 5. delete product by id
-
-const deleteProduct = async (req, res) => {
-
-    try {
-        const id = req.query.id;
-
-
-        const deleteProductsQuery = 'DELETE FROM products WHERE id = ?';
-        const rowsDeleted=await sequelize.query(deleteProductsQuery, {
-            replacements: [id],
-            type: sequelize.QueryTypes.DELETE,
-        });
-
-        if (rowsDeleted === 0) {
-            res.status(404).send('Product not found');
-        } else {
-            res.status(200).send('Product is deleted!');
-        }
-    } catch (error) {
-        console.error('Error deleting product:', error);
+        console.error('Error updating transfo:', error);
         res.status(500).send('Internal Server Error');
     }
 }
+
+
 
 module.exports = {
-    getProductOfSupp,
-    addProduct: addTransformateur,
-    getAllProducts,
-    updateProduct,
-    deleteProduct,
+    addTransformateur,
+    getAllTransfo,
+    updateTransfo
 }

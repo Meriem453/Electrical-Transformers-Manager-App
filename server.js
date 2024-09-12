@@ -12,8 +12,8 @@ app.use(express.urlencoded({ extended: true }))
 
 
 // routers
-const router = require('./routes/productRouter.js')
-app.use('/api', router)
+const transfoRouter = require('./routes/TransfoRouter.js')
+app.use('/api', transfoRouter)
 
 
 //port
