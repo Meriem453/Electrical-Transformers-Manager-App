@@ -1,15 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
 
     const Avarie = sequelize.define("avarie", {
-        cause: {
+        cause_avarie: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        date: {
+        date_avarie: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        fiche: {
+        fiche_avarie: {
             type: DataTypes.STRING,
             allowNull: false
         },

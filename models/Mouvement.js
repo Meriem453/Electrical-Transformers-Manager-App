@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        bon_mvt: {
+        observation: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -45,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
         // entretien: {
         //     type: DataTypes.STRING,
         // },
+        bon_mvt: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         bon_de_transfert: {
             type: DataTypes.STRING,
         },

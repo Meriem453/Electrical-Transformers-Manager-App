@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
 
     const Entretien = sequelize.define("entretien", {
-        cause: {
+        cause_entretien: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        date: {
+        date_entretien: {
             type: DataTypes.STRING,
             allowNull: false
         },
