@@ -32,7 +32,7 @@ fun FileSection(
     Column(modifier = modifier) {
         Text(title, fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 10.dp))
         Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            TextField(text,
+            TextField(initText,
                 onValueChange = {},
                 modifier = Modifier.clip(RoundedCornerShape(10.dp))
                     .border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(10.dp)).weight(1f)
@@ -57,7 +57,7 @@ fun FileSection(
                     .padding(horizontal = 5.dp)
                     .shadow(2.dp, RoundedCornerShape(10.dp))
                     .background(Color(0xff0073FF))
-                    .clickable { text="2003" }
+                    .clickable { onButtonClicked() }
             ){
                 Text("Parcourir", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.White, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
                 Icon(painter = painterResource("icons/insert_photo.svg"),"", tint = Color.White,modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))

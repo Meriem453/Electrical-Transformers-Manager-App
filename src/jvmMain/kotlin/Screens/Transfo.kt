@@ -34,7 +34,7 @@ fun Transfo(parentWindow: ComposeWindow, transfoHistory:(n_serie:String)->Unit) 
 
     val vm= TransfoVM
     var filterTransfo by remember { mutableStateOf(false) }
-    var addTransfo by remember { mutableStateOf(false) }
+    var  addTransfo by remember { mutableStateOf(false) }
     var editTransfo by remember { mutableStateOf(false) }
     var currentTransfo: Transformateur? by remember { mutableStateOf(null) }
 
@@ -371,13 +371,6 @@ list.forEachIndexed{position,item->
                 size = DpSize(1000.dp,700.dp)
             ),icon = painterResource("images/sonelgaz.png"), title = "Créer un transformateur"
         ) {
-            var openFile by remember { mutableStateOf(false) }
-
-            var dir:String?=null
-            FileDialog(parentWindow, "", FileDialog.LOAD).apply {
-                isVisible = openFile
-                dir=directory+file
-            }
             Box(
                 modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
                 contentAlignment = Alignment.TopEnd
@@ -483,29 +476,41 @@ list.forEachIndexed{position,item->
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+                    var fiche_garantie by remember { mutableStateOf(transfo.fiche_garantie) }
+                    transfo.fiche_garantie=fiche_garantie
                     FileSection(
                         "Fiche garantie",
-                        "",
+                        fiche_garantie,
                         {
-                        openFile=true
+                        fiche_garantie= openFileDialog(
+                            window,"choisir un fichier"
+                        )?:""
                         },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+                    var pv by remember { mutableStateOf(transfo.pv_d_essaie) }
+                    transfo.pv_d_essaie=pv
                     FileSection(
                         "Rapport PV",
-                        "",
+                        pv,
                         {
-                           openFile=true
+                           pv= openFileDialog(
+                               window,"choisir un fichier"
+                           )?:""
                         },
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+                    var plaque by remember { mutableStateOf(transfo.plaque_signalitique) }
+                    transfo.plaque_signalitique=plaque
                     FileSection(
                         "Plaque signalitique",
-                        "",
+                        plaque,
                         {
-                        openFile=true
+                            plaque= openFileDialog(
+                                window,"choisir un fichier"
+                            )?:""
                         },
                         Modifier.fillMaxWidth()
                     )

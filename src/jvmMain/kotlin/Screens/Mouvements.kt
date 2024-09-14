@@ -558,15 +558,17 @@ if(findTransfo) {
                                             },
                                             true,
                                         )
-                                        Spacer(modifier = Modifier.width(20.dp))
-                                        DropDown(
-                                            listOf(),
-                                            "Préciser",
-                                            {_,pos ->
-                                            //TODO("")
-                                            },
-                                            destAutre,
-                                        )
+                                        if(destAutre){
+                                            Spacer(modifier = Modifier.width(20.dp))
+                                            DropDown(
+                                                listOf(),
+                                                "Préciser",
+                                                {_,pos ->
+                                                    //TODO("")
+                                                },
+                                                true,
+                                            )
+                                        }
                                     }
                                     if (destPlat) {
                                         Spacer(modifier = Modifier.width(20.dp))
@@ -668,7 +670,7 @@ if(findTransfo) {
                                     Spacer(modifier = Modifier.height(50.dp))
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
+                                        horizontalArrangement = Arrangement.SpaceEvenly
                                     ) {
                                         DropDown(
                                             listOf(
@@ -677,7 +679,7 @@ if(findTransfo) {
                                                 "Borne cramé",
                                                 "Manque d'huile"
                                             ),
-                                            "Cause d'avarie",
+                                            "Cause d'entretien",
                                             {_,pos ->
 
                                             },
@@ -685,7 +687,7 @@ if(findTransfo) {
                                         )
                                         Spacer(modifier = Modifier.width(20.dp))
                                         EmptyTextField(
-                                            "Date d'avarie",
+                                            "Date d'entretien",
                                             "",
                                             10,
                                             {},
