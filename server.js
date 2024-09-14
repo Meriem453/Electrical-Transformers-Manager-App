@@ -13,7 +13,9 @@ app.use(express.urlencoded({ extended: true }))
 
 // routers
 const transfoRouter = require('./routes/TransfoRouter.js')
-app.use('/api', transfoRouter)
+const mvtRouter=require('./routes/MvtRouter.js')
+app.use('/transfo', transfoRouter)
+app.use('/mvt', mvtRouter)
 
 
 //port

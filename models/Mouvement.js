@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         observation: {
             type: DataTypes.STRING,
-            allowNull: false
         },
         // transformateur: {
         //     type: DataTypes.INT,

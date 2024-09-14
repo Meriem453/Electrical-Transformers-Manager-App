@@ -64,7 +64,6 @@ db.mouvement.belongsTo(db.transformateur,{
 db.mouvement.belongsTo(db.avarie,{
     foreignKey:'avarie',
     as:'avarie_',
-    allowNull:false,
     onDelete:"SET NULL",
     onUpdate:"CASCADE",
 })
@@ -72,7 +71,13 @@ db.mouvement.belongsTo(db.avarie,{
 db.mouvement.belongsTo(db.entretien,{
     foreignKey:'entretien',
     as:'entretien_',
-    allowNull:false,
+    onDelete:"SET NULL",
+    onUpdate:"CASCADE",
+})
+
+db.mouvement.belongsTo(db.vente,{
+    foreignKey:'vente',
+    as:'vente_',
     onDelete:"SET NULL",
     onUpdate:"CASCADE",
 })
