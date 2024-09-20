@@ -7,8 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 val postes= listOf(
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
-    Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
+    Poste("551 El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
+    Poste("551 El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
     Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
     Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),
     Poste("El Harrach","qsdfghjklmùaz","12543","Cabine","7410852","EI"),

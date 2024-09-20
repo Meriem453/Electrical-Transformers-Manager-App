@@ -33,11 +33,12 @@ data class Item(
 
 val items= listOf(
     Item("Transfomateurs","icons/flash_on.svg","ifjisnhvgivnrnvb"),
-    Item("Transfo. réformés","icons/wifi_protected_setup.svg",""),
     Item("Mouvements","icons/compare_arrows.svg",""),
     Item("Districts","icons/account_balance.svg",""),
     Item("Postes","icons/charging_station.svg",""),
     Item("Comptes","icons/people_alt.svg",""),
+    Item("Sortie d'actif","icons/restore_from_trash.svg",""),
+    Item("Réforme","icons/people_alt.svg",""),
 
 )
 @Composable
@@ -59,7 +60,8 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                 }
             }) {
                 items.forEachIndexed { index, item ->
-                    if(index!=5 || Auth.currentUser!!.role=="Admin")
+
+                    if(Auth.currentUser!!.role=="Admin" || (index!=3 && index!=5))
                     NavigationRailItem(
                         label = {
                             Text(
@@ -121,11 +123,12 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                             transfoHistory=it
                             selectedItem=2
                         }
-                        1 -> Reforme()
-                        2 -> Mouvements(window,transfoHistory)
-                        3 -> Districts(window)
-                        4 -> Postes(window)
-                        5 -> Comptes(window)
+                        1 -> Mouvements(window,transfoHistory)
+                        2 -> Districts(window)
+                        3 -> Postes(window)
+                        4 -> Comptes(window)
+                        5->  Reforme()
+                        6->  Sortie_d_actif()
                     }
                 }
             }

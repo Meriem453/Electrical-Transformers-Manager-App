@@ -234,11 +234,20 @@ fun Postes(window: ComposeWindow) {
                         modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
                     ) {
                         EmptyTextField(
-                            "Désignation",
+                            "Addresse poste",
                             "",
                             10,
                             {
                             poste.Designation=it
+                            },
+                            Modifier.fillMaxWidth()
+                        )
+                        EmptyTextField(
+                            "Commune",
+                            "",
+                            10,
+                            {
+                                poste.Designation=it
                             },
                             Modifier.fillMaxWidth()
                         )

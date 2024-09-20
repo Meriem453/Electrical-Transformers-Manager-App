@@ -34,7 +34,9 @@ import kotlinx.coroutines.launch
 
 
 val list= listOf(
-    "N° Bon","Date mvt","Date saisie","Motif","Marque","N° série transfo","Puissance","Tension","Année de fab","Fournisseur","Destination","District","Poste","Bon mvt","Date bon"
+    "N° Bon","Date mvt","Date saisie","Motif","Marque","N° série transfo",
+   // "Puissance","Tension","Année de fab","Fournisseur",
+    "Nature du mvt","Provenance","Destination","District","Poste","Bon mvt","Date bon",""
 )
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -116,9 +118,8 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
                             var hover by remember { mutableStateOf(false) }
                             vm.filteredMvt.forEachIndexed{pos, mvt->
-                                Box(modifier = Modifier .background(
-                                    if(pos==hoveredTransfoPos) Color(0xffE5F1FF) else Color.White
-                                ).onPointerEvent(
+                                Box(modifier = Modifier
+                                    .onPointerEvent(
                                     PointerEventType.Enter,
                                     onEvent = {
                                         hover = true
@@ -131,12 +132,7 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                                         hoveredTransfoPos = null
 
                                     }).fillMaxWidth()
-                                    .clickable {
-                                        currentMvt=mvt
-                                        window.isEnabled = false
-                                        mvtDetails = true
-                                    }
-                                ) {
+                               , contentAlignment = Alignment.Center ) {
                                     Text(
                                         when(position){
                                             0->mvt.n_bon
@@ -145,19 +141,36 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                                             3->mvt.motif
                                             4->mvt.marque
                                             5->mvt.n_serie_transfo
-                                            6->mvt.puissance
-                                            7->mvt.tension
-                                            8->mvt.annee_de_fab
-                                            9->mvt.fournisseur
-                                            10->mvt.destination
-                                            11->mvt.district
-                                            12->mvt.poste
-                                            13->mvt.bon_mvt
-                                            14->mvt.date_bon
+//                                            6->mvt.puissance
+//                                            7->mvt.tension
+                                            6->mvt.annee_de_fab
+                                            7->mvt.fournisseur
+                                            8->mvt.destination
+                                            9->mvt.district
+                                            10->mvt.poste
+                                            11->mvt.bon_mvt
+                                            12->mvt.date_bon
                                             else ->""
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
-                                    )}
+                                    )
+                                    if(position==13){
+                                        Row (verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(20.dp))
+                                                .padding(horizontal = 5.dp)
+                                                .shadow(2.dp, RoundedCornerShape(10.dp))
+                                                .background(Color(0xff0073FF))
+                                                .clickable {
+                                                    currentMvt=mvt
+                                                    window.isEnabled = false
+                                                    mvtDetails = true
+                                                }
+                                        ){
+                                            Text("Modifier", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.White, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -348,7 +361,6 @@ if(findTransfo) {
                         var motifAvar by remember { mutableStateOf(false) }
                         var motifEntr by remember { mutableStateOf(false) }
                         var motifTransfertInterDD by remember { mutableStateOf(false) }
-                        var motifTransfertDDversGDC by remember { mutableStateOf(false) }
                         var motifVente by remember { mutableStateOf(false) }
 
                         var mouvement =Mouvement()
@@ -394,7 +406,7 @@ if(findTransfo) {
                                 }
                                 Spacer(modifier = Modifier.height(50.dp))
                                 Text(
-                                    "Transfo: ${currentTransfo!!.n_serie} Marque: ${currentTransfo!!.marque} Provenance:${currentTransfo!!.lieu_actuel}",
+                                    "Transfo: ${currentTransfo?.n_serie} Marque:${currentTransfo?.marque} ",
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 20.sp,
                                     color = Theme.MAIN_BLUE,
@@ -408,20 +420,18 @@ if(findTransfo) {
                                 ) {
                                     DropDown(
                                         listOf("El Harrach", "Rouiba"),
-                                        "Emetteur (District)",
-                                        {text,pos ->
-                                            mouvement.district=text
+                                        "District",
+                                        {_,pos ->
+
                                         },
                                         true,
                                     )
                                     Spacer(modifier = Modifier.width(20.dp))
                                     EmptyTextField(
                                         "N° du bon de mvt",
-                                        "",
+                                        currentMvt?.n_bon?:"",
                                         10,
-                                        {
-                                        mouvement.n_bon=it
-                                        },
+                                        {},
                                         Modifier
                                     )
                                     Spacer(modifier = Modifier.width(20.dp))
@@ -429,9 +439,7 @@ if(findTransfo) {
                                         "Date du bon de mvt",
                                         "",
                                         10,
-                                        {
-                                        mouvement.date_bon=it
-                                        },
+                                        {},
                                         Modifier
                                     )
                                     Spacer(modifier = Modifier.width(20.dp))
@@ -439,9 +447,7 @@ if(findTransfo) {
                                         "Date de mvt",
                                         "",
                                         10,
-                                        {
-                                        mouvement.date_mvt=it
-                                        },
+                                        {},
                                         Modifier
                                     )
                                 }
@@ -466,17 +472,16 @@ if(findTransfo) {
                                             "Poste remplacé",
                                             "Vente",
                                             "Transfert inter DD",
-                                            "Transfert DD vers GDC"
-                                        ),
+
+                                            ),
                                         "Motif",
-                                        {text,pos ->
+                                        {_,pos ->
                                             when (pos) {
                                                 0 -> {
                                                     motifAvar = true
                                                     motifEntr = false
                                                     motifVente = false
                                                     motifTransfertInterDD = false
-                                                    motifTransfertDDversGDC = false
                                                 }
 
                                                 5 -> {
@@ -484,7 +489,6 @@ if(findTransfo) {
                                                     motifEntr = true
                                                     motifVente = false
                                                     motifTransfertInterDD = false
-                                                    motifTransfertDDversGDC = false
                                                 }
 
                                                 12 -> {
@@ -492,7 +496,6 @@ if(findTransfo) {
                                                     motifEntr = false
                                                     motifVente = true
                                                     motifTransfertInterDD = false
-                                                    motifTransfertDDversGDC = false
                                                 }
 
                                                 13 -> {
@@ -500,49 +503,45 @@ if(findTransfo) {
                                                     motifEntr = false
                                                     motifVente = false
                                                     motifTransfertInterDD = true
-                                                    motifTransfertDDversGDC = false
                                                 }
-
-                                                14 -> {
-                                                    motifAvar = false
-                                                    motifEntr = false
-                                                    motifVente = false
-                                                    motifTransfertInterDD = false
-                                                    motifTransfertDDversGDC = true
-                                                }
-
                                                 else -> {
                                                     motifAvar = false
                                                     motifEntr = false
                                                     motifVente = false
                                                     motifTransfertInterDD = false
-                                                    motifTransfertDDversGDC = false
                                                 }
                                             }
-                                            mouvement.motif= text
                                         },
                                         true,
                                     )
                                     Spacer(modifier = Modifier.width(20.dp))
+                                    Text(
+                                        "Provenance: ${currentTransfo?.lieu_actuel?:""}",
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 20.sp,
+                                        color = Theme.MAIN_BLUE,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Spacer(modifier = Modifier.width(20.dp))
                                     Column {
                                         DropDown(
-                                            listOf("Stock", "Exploitation", "Platform DD", "Platform GDC", "Autre"),
+                                            listOf("Exploitation", "Platform", "Atelier de réparation", "Autre"),
                                             "Destination",
                                             {text,pos ->
                                                 when (pos) {
-                                                    1 -> {
+                                                    0 -> {
                                                         destAutre = false
                                                         destExploi = true
                                                         destPlat = false
                                                     }
 
-                                                    3 -> {
+                                                    1 -> {
                                                         destAutre = false
                                                         destExploi = false
                                                         destPlat = true
                                                     }
 
-                                                    4 -> {
+                                                    3 -> {
                                                         destAutre = true
                                                         destExploi = false
                                                         destPlat = false
@@ -554,31 +553,51 @@ if(findTransfo) {
                                                         destPlat = false
                                                     }
                                                 }
-                                                mouvement.destination=text
+
                                             },
                                             true,
                                         )
+                                        Spacer(modifier = Modifier.width(20.dp))
                                         if(destAutre){
-                                            Spacer(modifier = Modifier.width(20.dp))
-                                            DropDown(
-                                                listOf(),
+                                            EmptyTextField(
                                                 "Préciser",
-                                                {_,pos ->
-                                                    //TODO("")
-                                                },
-                                                true,
+                                                "",
+                                                10,
+                                                {},
+                                                Modifier
                                             )
                                         }
                                     }
-                                    if (destPlat) {
+                                    Spacer(modifier = Modifier.width(20.dp))
+                                    Text(
+                                        "Nature: ${findNature(currentTransfo?.lieu_actuel,destAutre,destExploi,destPlat)}",
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 20.sp,
+                                        color = Theme.MAIN_BLUE,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                if (destPlat) {
+                                    Spacer(modifier = Modifier.height(50.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        DropDown(
+                                            listOf("Stock de sécurité", "A entretenir", "Avarié"),
+                                            "Etat",
+                                            { _, pos ->
+
+                                            },
+                                            true,
+                                        )
                                         Spacer(modifier = Modifier.width(20.dp))
                                         EmptyTextField(
-                                            "Date d'entrée",
+                                            "Lieu",
                                             "",
                                             10,
-                                            {
-                                            //TODO("")
-                                            },
+                                            {},
                                             Modifier
                                         )
                                     }
@@ -670,15 +689,9 @@ if(findTransfo) {
                                     Spacer(modifier = Modifier.height(50.dp))
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceEvenly
                                     ) {
                                         DropDown(
-                                            listOf(
-                                                "Fuite d'huile",
-                                                "Poupé fissurés",
-                                                "Borne cramé",
-                                                "Manque d'huile"
-                                            ),
+                                            listOf(),
                                             "Cause d'entretien",
                                             {_,pos ->
 
@@ -699,15 +712,6 @@ if(findTransfo) {
                                     Spacer(modifier = Modifier.height(50.dp))
                                     FileSection(
                                         "Bon de transfert",
-                                        "",
-                                        {},
-                                        Modifier.fillMaxWidth()
-                                    )
-                                }
-                                if (motifTransfertDDversGDC) {
-                                    Spacer(modifier = Modifier.height(50.dp))
-                                    FileSection(
-                                        "Bon de commande",
                                         "",
                                         {},
                                         Modifier.fillMaxWidth()
@@ -1009,7 +1013,8 @@ if(findTransfo) {
         if(mvtDetails){
             Window(onCloseRequest = {
                 currentMvt=null
-                mvtDetails=true
+                window.isEnabled = true
+                mvtDetails=false
             },
                 resizable = false,
                 state = rememberWindowState(
@@ -1023,7 +1028,6 @@ if(findTransfo) {
                 var motifAvar by remember { mutableStateOf(false) }
                 var motifEntr by remember { mutableStateOf(false) }
                 var motifTransfertInterDD by remember { mutableStateOf(false) }
-                var motifTransfertDDversGDC by remember { mutableStateOf(false) }
                 var motifVente by remember { mutableStateOf(false) }
 
                 val verticalScroll = rememberScrollState()
@@ -1066,7 +1070,7 @@ if(findTransfo) {
                         }
                         Spacer(modifier = Modifier.height(50.dp))
                         Text(
-                            "Transfo: ${currentMvt!!.n_serie_transfo} Marque:${currentMvt!!.marque} Provenance:",
+                            "Transfo: ${currentMvt?.n_serie_transfo} Marque:${currentMvt?.marque} ",
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 20.sp,
                             color = Theme.MAIN_BLUE,
@@ -1080,7 +1084,7 @@ if(findTransfo) {
                         ) {
                             DropDown(
                                 listOf("El Harrach", "Rouiba"),
-                                "Emetteur (District)",
+                                "District",
                                 {_,pos ->
 
                                 },
@@ -1089,7 +1093,7 @@ if(findTransfo) {
                             Spacer(modifier = Modifier.width(20.dp))
                             EmptyTextField(
                                 "N° du bon de mvt",
-                                currentMvt!!.n_bon,
+                                currentMvt?.n_bon?:"",
                                 10,
                                 {},
                                 Modifier
@@ -1105,7 +1109,7 @@ if(findTransfo) {
                             Spacer(modifier = Modifier.width(20.dp))
                             EmptyTextField(
                                 "Date de mvt",
-                                currentMvt!!.date_mvt,
+                                currentMvt?.date_mvt?:"",
                                 10,
                                 {},
                                 Modifier
@@ -1132,7 +1136,7 @@ if(findTransfo) {
                                     "Poste remplacé",
                                     "Vente",
                                     "Transfert inter DD",
-                                    "Transfert DD vers GDC"
+
                                 ),
                                 "Motif",
                                 {_,pos ->
@@ -1142,7 +1146,6 @@ if(findTransfo) {
                                             motifEntr = false
                                             motifVente = false
                                             motifTransfertInterDD = false
-                                            motifTransfertDDversGDC = false
                                         }
 
                                         5 -> {
@@ -1150,7 +1153,6 @@ if(findTransfo) {
                                             motifEntr = true
                                             motifVente = false
                                             motifTransfertInterDD = false
-                                            motifTransfertDDversGDC = false
                                         }
 
                                         12 -> {
@@ -1158,7 +1160,6 @@ if(findTransfo) {
                                             motifEntr = false
                                             motifVente = true
                                             motifTransfertInterDD = false
-                                            motifTransfertDDversGDC = false
                                         }
 
                                         13 -> {
@@ -1166,48 +1167,45 @@ if(findTransfo) {
                                             motifEntr = false
                                             motifVente = false
                                             motifTransfertInterDD = true
-                                            motifTransfertDDversGDC = false
                                         }
-
-                                        14 -> {
-                                            motifAvar = false
-                                            motifEntr = false
-                                            motifVente = false
-                                            motifTransfertInterDD = false
-                                            motifTransfertDDversGDC = true
-                                        }
-
                                         else -> {
                                             motifAvar = false
                                             motifEntr = false
                                             motifVente = false
                                             motifTransfertInterDD = false
-                                            motifTransfertDDversGDC = false
                                         }
                                     }
                                 },
                                 true,
                             )
                             Spacer(modifier = Modifier.width(20.dp))
+                            Text(
+                                "Provenance: Exploitation",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 20.sp,
+                                color = Theme.MAIN_BLUE,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
                             Column {
                                 DropDown(
-                                    listOf("Stock", "Exploitation", "Platform DD", "Platform GDC", "Autre"),
+                                    listOf("Exploitation", "Platform", "Atelier de réparation", "Autre"),
                                     "Destination",
-                                    {_,pos ->
+                                    {text,pos ->
                                         when (pos) {
-                                            1 -> {
+                                            0 -> {
                                                 destAutre = false
                                                 destExploi = true
                                                 destPlat = false
                                             }
 
-                                            3 -> {
+                                            1 -> {
                                                 destAutre = false
                                                 destExploi = false
                                                 destPlat = true
                                             }
 
-                                            4 -> {
+                                            3 -> {
                                                 destAutre = true
                                                 destExploi = false
                                                 destPlat = false
@@ -1219,23 +1217,47 @@ if(findTransfo) {
                                                 destPlat = false
                                             }
                                         }
+
                                     },
                                     true,
                                 )
                                 Spacer(modifier = Modifier.width(20.dp))
+                                if(destAutre){
+                                    EmptyTextField(
+                                        "Préciser",
+                                        "",
+                                        10,
+                                        {},
+                                        Modifier
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Text(
+                                "Nature: ${findNature(currentTransfo?.lieu_actuel,destAutre,destExploi,destPlat)}",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 20.sp,
+                                color = Theme.MAIN_BLUE,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        if (destPlat) {
+                            Spacer(modifier = Modifier.height(50.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
                                 DropDown(
-                                    listOf(),
-                                    "Préciser",
-                                    {_,pos ->
+                                    listOf("Stock de sécurité", "A entretenir", "Avarié"),
+                                    "Etat",
+                                    { _, pos ->
 
                                     },
-                                    destAutre,
+                                    true,
                                 )
-                            }
-                            if (destPlat) {
                                 Spacer(modifier = Modifier.width(20.dp))
                                 EmptyTextField(
-                                    "Date d'entrée",
+                                    "Lieu",
                                     "",
                                     10,
                                     {},
@@ -1330,11 +1352,10 @@ if(findTransfo) {
                             Spacer(modifier = Modifier.height(50.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 DropDown(
                                     listOf(),
-                                    "Cause d'avarie",
+                                    "Cause d'entretien",
                                     {_,pos ->
 
                                     },
@@ -1342,7 +1363,7 @@ if(findTransfo) {
                                 )
                                 Spacer(modifier = Modifier.width(20.dp))
                                 EmptyTextField(
-                                    "Date d'avarie",
+                                    "Date d'entretien",
                                     "",
                                     10,
                                     {},
@@ -1354,15 +1375,6 @@ if(findTransfo) {
                             Spacer(modifier = Modifier.height(50.dp))
                             FileSection(
                                 "Bon de transfert",
-                                "",
-                                {},
-                                Modifier.fillMaxWidth()
-                            )
-                        }
-                        if (motifTransfertDDversGDC) {
-                            Spacer(modifier = Modifier.height(50.dp))
-                            FileSection(
-                                "Bon de commande",
                                 "",
                                 {},
                                 Modifier.fillMaxWidth()
@@ -1425,6 +1437,12 @@ if(findTransfo) {
         }
                     }
     }
+
+fun findNature(lieuActuel: String?, destAutre: Boolean, destExploi: Boolean, destPlat: Boolean): String {
+    //TODO("why should i do this shit !")
+    return "M"
+
+}
 
 
 @Composable

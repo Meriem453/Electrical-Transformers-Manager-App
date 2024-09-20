@@ -5,6 +5,7 @@ import VIewModels.TransfoVM
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,7 +35,7 @@ fun Transfo(parentWindow: ComposeWindow, transfoHistory:(n_serie:String)->Unit) 
 
     val vm= TransfoVM
     var filterTransfo by remember { mutableStateOf(false) }
-    var  addTransfo by remember { mutableStateOf(false) }
+    var addTransfo by remember { mutableStateOf(false) }
     var editTransfo by remember { mutableStateOf(false) }
     var currentTransfo: Transformateur? by remember { mutableStateOf(null) }
 
@@ -92,6 +93,15 @@ Column (modifier = Modifier.fillMaxSize()){
     var checkedItem by remember {
         mutableStateOf(0)
     }
+        vm.filterTransfo(
+            Transformateur(lieu_actuel = when(checkedItem){
+                0-> "Exploitation"
+                1-> "Platform"
+                2-> "Atelier de réparation"
+                else->""
+            }
+            )
+        )
 CheckGrp(
     isChecked = checkedItem==0,
     onChecked = {checkedItem=0},
@@ -111,19 +121,22 @@ CheckGrp(
         CheckGrp(
             isChecked = checkedItem==1,
             onChecked = {checkedItem=1},
-            "Stock")
+            "Platform"
+        )
+        Spacer(modifier = Modifier.width(20.dp))
+        DropDown(
+            listOf("Stock sécurité","A entretenir","Avarié"),
+            "Etat",
+            {_,pos ->
+
+            },
+            checkedItem==0
+        )
         Spacer(modifier = Modifier.width(20.dp))
 
         CheckGrp(
             isChecked = checkedItem==2,
             onChecked = {checkedItem=2},
-            "Platform DD"
-        )
-        Spacer(modifier = Modifier.width(20.dp))
-
-        CheckGrp(
-            isChecked = checkedItem==3,
-            onChecked = {checkedItem=3},
             "Atelier de réparation"
         )
     }
@@ -139,7 +152,7 @@ CheckGrp(
             .horizontalScroll(horizontal_state)
     ) {
         val list= listOf(
-            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Lieu actuel","District","Poste","Fiche garantie","PV d'éssaie","Plaque signalitique"
+            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition","Lieu","District","Addresse","Commune","N° Poste","Fiche garantie","PV d'éssaie","Plaque signalitique","",""
         )
 
         Row(modifier = Modifier.fillMaxWidth()){
@@ -149,9 +162,8 @@ list.forEachIndexed{position,item->
         Column(modifier = Modifier.verticalScroll(vertical_state)) {
             var hover by remember { mutableStateOf(false) }
             vm.filteredTransfo.forEachIndexed{pos, transfo->
-                Box(modifier = Modifier .background(
-                    if(pos==hoveredTransfoPos) Color(0xffE5F1FF) else Color.White
-                ).onPointerEvent(
+                Box(contentAlignment = Alignment.Center, modifier = Modifier
+                    .onPointerEvent(
                     PointerEventType.Enter,
                     onEvent = {
                         hover = true
@@ -164,11 +176,7 @@ list.forEachIndexed{position,item->
                         hoveredTransfoPos = null
 
                     }).fillMaxWidth()
-                    .clickable {
-                        currentTransfo=transfo
-                        editTransfo=true
-                        parentWindow.isEnabled=false
-                    }
+
                 ) {
                 Text(
                     when(position){
@@ -178,16 +186,48 @@ list.forEachIndexed{position,item->
                         3->transfo.puissance
                         4->transfo.a_fabrication
                         5->transfo.fournisseur
-                        6->transfo.lieu_actuel
-                        7->transfo.district
-                        8->transfo.poste
-                        9->transfo.fiche_garantie
-                        10->transfo.pv_d_essaie
-                        11->transfo.plaque_signalitique
+                        6->"Lieu"
+                        7->"100000 DA"
+                        8->"EL Harrach"
+                        9->"Boumaati"
+                        10->"zert"
+                        11->"1234698"
+                        12->transfo.fiche_garantie
+                        13->transfo.pv_d_essaie
+                        14->transfo.plaque_signalitique
                         else ->""
                                     }
                     , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
-                )}
+                )
+                if(position==15){
+                    Row (verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .padding(horizontal = 5.dp)
+                            .shadow(2.dp, RoundedCornerShape(10.dp))
+                            .background(Color(0xff0073FF))
+                            .clickable {
+                                currentTransfo=transfo
+                                editTransfo=true
+                                parentWindow.isEnabled=false
+                            }
+                    ){
+                        Text("Modifier", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.White, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
+                    }
+                }
+                    if(position==16){
+                        Row (verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .padding(horizontal = 5.dp)
+                                .shadow(2.dp, RoundedCornerShape(10.dp))
+                                .background(Color(0xff0073FF))
+                                .clickable {  }
+                        ){
+                            Text("Proposer à la réforme", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.White, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
+                        }
+                    }
+                }
             }
         }
     }
@@ -310,27 +350,6 @@ list.forEachIndexed{position,item->
                        currentTransfo?.fournisseur=it
 
                    },
-                   Modifier.fillMaxWidth()
-               )
-               Spacer(modifier = Modifier.height(20.dp))
-               FileSection(
-                   "Fiche garantie",
-                   currentTransfo?.fiche_garantie?:"",
-                   {},
-                   Modifier.fillMaxWidth()
-               )
-               Spacer(modifier = Modifier.height(20.dp))
-               FileSection(
-                   "Rapport PV",
-                   currentTransfo?.pv_d_essaie?:"",
-                   {},
-                   Modifier.fillMaxWidth()
-               )
-               Spacer(modifier = Modifier.height(20.dp))
-               FileSection(
-                   "Plaque signalitique",
-                   currentTransfo?.plaque_signalitique?:"",
-                   {},
                    Modifier.fillMaxWidth()
                )
                Spacer(modifier = Modifier.height(50.dp))
@@ -467,7 +486,17 @@ list.forEachIndexed{position,item->
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                     EmptyTextField(
-                        "Fournisseur",
+                        "Prix d'aquisition",
+                        "",
+                        4,
+                        {
+
+                        },
+                        Modifier
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    EmptyTextField(
+                        "Fournit par",
                        "",
                         30,
                         {
@@ -476,6 +505,7 @@ list.forEachIndexed{position,item->
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+
                     var fiche_garantie by remember { mutableStateOf(transfo.fiche_garantie) }
                     transfo.fiche_garantie=fiche_garantie
                     FileSection(
