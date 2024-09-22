@@ -21,6 +21,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +36,8 @@ fun Districts(window: ComposeWindow) {
     val vm = DistrictVM
 
     var addDistrict by remember { mutableStateOf(false) }
+    var chanPoste by remember { mutableStateOf(false) }
+    var currentPoste:Poste? by remember { mutableStateOf(null) }
 
     Column (modifier = Modifier.fillMaxSize()){
 
@@ -50,7 +53,6 @@ fun Districts(window: ComposeWindow) {
             Refresh {
                 vm.getAllDistricts()
             }
-            if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") {
                 Button(
                     icon = "icons/add.svg",
                     text = "Nouveau",
@@ -61,7 +63,7 @@ fun Districts(window: ComposeWindow) {
                         addDistrict = true
                     }
                 )
-            }
+
         }
         val vertical_state= rememberScrollState()
         var hoveredDistPos:Int? by remember { mutableStateOf(null) }
@@ -124,7 +126,7 @@ fun Districts(window: ComposeWindow) {
             resizable = false,
             state = rememberWindowState(
                 position = WindowPosition(500.dp,200.dp),
-                size = DpSize(1000.dp,500.dp)
+                size = DpSize(1000.dp,700.dp)
             ),icon = painterResource("images/sonelgaz.png"), title = "Ajouter une district"
         ) {
             var empty by remember { mutableStateOf(false) }
@@ -137,7 +139,6 @@ fun Districts(window: ComposeWindow) {
                 Column(
                     modifier = Modifier
                         .padding(20.dp)
-                        .verticalScroll(scrollState)
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                         Text("Ajouter une district", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
@@ -150,11 +151,7 @@ fun Districts(window: ComposeWindow) {
                                 .background(Color(0xff0073FF))
                                 .clickable {
                                     if(
-                                        district.district!=""&&
-                                        district.centre!=""&&
-                                        district.init!=""&&
-                                        district.code_centre!=""&&
-                                        district.code_agence!=""
+                                      true
                                     ) {
                                         window.isEnabled=true
                                         addDistrict = false
@@ -171,22 +168,29 @@ fun Districts(window: ComposeWindow) {
                             )
                         }
                     }
+                    Text(
+                        "Information de la district",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Theme.MAIN_BLUE,
+                        modifier = Modifier.padding(top = 30.dp),
+                        //textAlign = TextAlign.Center
+                    )
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        EmptyTextField(
-                            "District",
-                            "",
-                            10,
-                            {
-                            district.district=it
+                        DropDown(
+                            listOf(),
+                            "DD",
+                            {item, position ->  
+
                             },
-                            Modifier.fillMaxWidth(.3f)
+                            true,
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         EmptyTextField(
-                            "Centre",
+                            "Code district",
                             "",
                             10,
                             {
@@ -196,7 +200,7 @@ fun Districts(window: ComposeWindow) {
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         EmptyTextField(
-                            "Init",
+                            "Nom district",
                             "",
                             10,
                             {
@@ -205,33 +209,187 @@ fun Districts(window: ComposeWindow) {
                             Modifier.fillMaxWidth()
                         )
                     }
-
+                    Text(
+                        "Ajouter des postes",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Theme.MAIN_BLUE,
+                        modifier = Modifier.padding(top = 30.dp),
+                        //textAlign = TextAlign.Center
+                    )
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
                     ) {
-                        EmptyTextField(
-                            "Code district",
-                            "",
-                            10,
-                            {
-                            district.code_agence=it
+                        DropDown(
+                            listOf(),
+                            "DD",
+                            {item, position ->
+
                             },
-                            Modifier.fillMaxWidth(.3f)
+                            true,
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        DropDown(
+                            listOf(),
+                            "District",
+                            {item, position ->
+
+                            },
+                            true,
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         EmptyTextField(
-                            "Code centre",
+                            "Commune",
                             "",
                             10,
                             {
-                            district.code_centre=it
+
+                            },
+                            Modifier.fillMaxWidth()
+                        )
+                    }
+
+
+                        Column(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .padding(top = 30.dp)
+                                .background(Color.White)
+
+                        ) {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                                listOf("N° poste", "Nature", "").forEachIndexed { position, item ->
+                                    Column {
+                                        Text(
+                                            item,
+                                            fontSize = 17.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(20.dp)
+                                        )
+                                        Column(modifier = Modifier.verticalScroll(scrollState)) {
+                                            listOf(
+                                                Poste(
+                                                    Numero = "124563",
+                                                    Nature = "Cabine"
+                                                )
+                                            ).forEachIndexed { pos, poste ->
+                                                Box(
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Text(
+                                                        when (position) {
+                                                            0 -> poste.Numero
+                                                            1 -> poste.Nature
+                                                            else -> ""
+                                                        }, fontSize = 15.sp, modifier = Modifier.padding(20.dp)
+                                                    )
+                                                    if (position == 2) {
+                                                        Row(verticalAlignment = Alignment.CenterVertically,
+                                                            modifier = Modifier
+                                                                .clip(RoundedCornerShape(20.dp))
+                                                                .padding(horizontal = 5.dp)
+                                                                .shadow(2.dp, RoundedCornerShape(10.dp))
+                                                                .background(Color(0xff0073FF))
+                                                                .clickable {
+                                                                    currentPoste = poste
+                                                                    window.isEnabled = false
+                                                                    chanPoste = true
+                                                                }
+                                                        ) {
+                                                            Text(
+                                                                "Ajouter",
+                                                                fontSize = 18.sp,
+                                                                fontWeight = FontWeight.Medium,
+                                                                color = Color.White,
+                                                                modifier = Modifier.padding(
+                                                                    horizontal = 10.dp,
+                                                                    vertical = 5.dp
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                    }
+                                        VerticalScrollbar(rememberScrollbarAdapter(scrollState))
+
+                                    }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    if(chanPoste){
+        Window(onCloseRequest = {
+            window.isEnabled=true
+            chanPoste=false},
+            resizable = false,
+            state = rememberWindowState(
+                position = WindowPosition(500.dp,200.dp),
+                size = DpSize(800.dp,300.dp)
+            ),icon = painterResource("images/sonelgaz.png"), title = "Changer le numero d'un poste"
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                var empty by remember { mutableStateOf(false) }
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Text("Changer le nmr d'un poste", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                        if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
+                        Box(contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .padding(horizontal = 5.dp)
+                                .shadow(2.dp, RoundedCornerShape(20.dp))
+                                .background(Color(0xff0073FF))
+                                .clickable {
+                                    if(
+                                       true
+                                    )
+                                    {
+                                        chanPoste = false
+
+                                    }
+                                    else empty=true
+                                }
+                        ) {
+                            Text(
+                                "Ajouter",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        EmptyTextField(
+                            "Numero",
+                            "",
+                            10,
+                            {
+                                currentPoste!!.Numero=it
                             },
                             Modifier.fillMaxWidth(.5f)
                         )
-
                     }
+
+
                 }
-                    VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
             }
         }
     }

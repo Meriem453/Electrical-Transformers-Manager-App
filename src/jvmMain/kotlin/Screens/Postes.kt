@@ -38,7 +38,6 @@ fun Postes(window: ComposeWindow) {
 
     val vm = PostesVM
 
-    var addPoste by remember { mutableStateOf(false) }
 
     Column (modifier = Modifier.fillMaxSize()){
 
@@ -69,18 +68,6 @@ fun Postes(window: ComposeWindow) {
                 background = Color.White,
                 {}
             )
-            if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") {
-                Button(
-                    icon = "icons/add.svg",
-                    text = "Nouveau",
-                    tintColor = Color.White,
-                    background = Color(0xff0073FF),
-                    {
-                        window.isEnabled = false
-                        addPoste = true
-                    }
-                )
-            }
         }
         val vertical_state= rememberScrollState()
         var hoveredPostePos:Int? by remember { mutableStateOf(null) }
@@ -93,7 +80,7 @@ fun Postes(window: ComposeWindow) {
                 .fillMaxWidth()
         ) {
             val list= listOf(
-                "District","Designation","Numero","Nature","N° série transfo","Marque transfo",null
+                "District","Addresse","Commune","Numero","Nature","N° série transfo","Marque transfo",null
             )
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
@@ -122,10 +109,11 @@ fun Postes(window: ComposeWindow) {
                                         when(position){
                                             0->poste.District
                                             1-> poste.Designation
-                                            2->poste.Numero
-                                            3->poste.Nature
-                                            4->poste.n_serie_transfo
-                                            5->poste.marque_transfo
+                                            2->"Commune"
+                                            3->poste.Numero
+                                            4->poste.Nature
+                                            5->poste.n_serie_transfo
+                                            6->poste.marque_transfo
                                             else ->""
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
@@ -136,124 +124,6 @@ fun Postes(window: ComposeWindow) {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    if(addPoste){
-        Window(onCloseRequest = {
-            window.isEnabled=true
-            addPoste=false},
-            resizable = false,
-            state = rememberWindowState(
-                position = WindowPosition(500.dp,200.dp),
-                size = DpSize(1000.dp,500.dp)
-            ),icon = painterResource("images/sonelgaz.png"), title = "Ajouter un poste"
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
-                contentAlignment = Alignment.TopEnd
-            ) {
-                var scrollState = rememberScrollState()
-                var empty by remember { mutableStateOf(false) }
-                val poste=Poste()
-                Column(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .verticalScroll(scrollState)
-                ) {
-                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                        Text("Ajouter un poste", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
-                        if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
-                        Box(contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(10.dp))
-                                .padding(horizontal = 5.dp)
-                                .shadow(2.dp, RoundedCornerShape(20.dp))
-                                .background(Color(0xff0073FF))
-                                .clickable {
-                                    if(
-                                        poste.Numero!=""&&
-                                        poste.Designation!=""&&
-                                        poste.Nature!=""&&
-                                        poste.District!=""
-                                    )
-                                    {
-                                        window.isEnabled=true
-                                        addPoste = false
-
-                                    }
-                                    else empty=true
-                                }
-                        ) {
-                            Text(
-                                "Créer",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color.White,
-                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        DropDown(
-                            listOf("El Harrach","Rouiba"),
-                            "District",
-                            {text,_ ->
-                                poste.District=text
-                            },
-                            true,
-                            Modifier.fillMaxWidth(.3f)
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        EmptyTextField(
-                            "Numero",
-                            "",
-                            10,
-                            {
-                            poste.Numero=it
-                            },
-                            Modifier.fillMaxWidth(.5f)
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        DropDown(
-                            listOf("NP"),
-                            "Nature",
-                            {text,_ ->
-                                poste.Nature=text
-                            },
-                            true,
-                            Modifier.fillMaxWidth()
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
-                    ) {
-                        EmptyTextField(
-                            "Addresse poste",
-                            "",
-                            10,
-                            {
-                            poste.Designation=it
-                            },
-                            Modifier.fillMaxWidth()
-                        )
-                        EmptyTextField(
-                            "Commune",
-                            "",
-                            10,
-                            {
-                                poste.Designation=it
-                            },
-                            Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-                VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
             }
         }
     }

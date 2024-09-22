@@ -2,6 +2,7 @@ package Screens
 
 
 import Models.Mouvement
+import Models.Poste
 import Models.Transformateur
 import Screens.Components.*
 import Theme
@@ -51,6 +52,8 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
         var filterMvt by remember { mutableStateOf(false) }
         var mvtDetails by remember { mutableStateOf(false) }
         var closeConfirm by remember { mutableStateOf(false) }
+        var addPoste by remember { mutableStateOf(false) }
+
 
         var currentMvt:Mouvement? by remember { mutableStateOf(null) }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -618,21 +621,24 @@ if(findTransfo) {
                                             true,
                                         )
                                         Spacer(modifier = Modifier.width(20.dp))
-                                        EmptyTextField(
-                                            "Nature",
-                                            "",
-                                            10,
-                                            {},
-                                            Modifier
-                                        )
-                                        Spacer(modifier = Modifier.width(20.dp))
-                                        EmptyTextField(
-                                            "Designation",
-                                            "",
-                                            25,
-                                            {},
-                                            Modifier
-                                        )
+                                        Box(contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(20.dp))
+                                                .padding(horizontal = 5.dp)
+                                                .shadow(2.dp, RoundedCornerShape(10.dp))
+                                                .background(Color(0xff0073FF))
+                                                .clickable {
+                                                  addPoste=true
+                                                }
+                                        ) {
+                                            Text(
+                                                "Nouveau poste",
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Medium,
+                                                color = Color.White,
+                                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
+                                            )
+                                        }
                                     }
                                 }
                                 if (motifAvar) {
@@ -1118,7 +1124,8 @@ if(findTransfo) {
                         Spacer(modifier = Modifier.height(30.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             DropDown(
                                 listOf(
@@ -1432,6 +1439,125 @@ if(findTransfo) {
                         }
                     }
                     VerticalScrollbar(rememberScrollbarAdapter(verticalScroll))
+                }
+            }
+        }
+
+        if(addPoste){
+            Window(onCloseRequest = {
+                window.isEnabled=true
+                addPoste=false},
+                resizable = false,
+                state = rememberWindowState(
+                    position = WindowPosition(500.dp,200.dp),
+                    size = DpSize(1000.dp,500.dp)
+                ),icon = painterResource("images/sonelgaz.png"), title = "Ajouter un poste"
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color(0xffF8F8F8)),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    var scrollState = rememberScrollState()
+                    var empty by remember { mutableStateOf(false) }
+                    val poste= Poste()
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(scrollState)
+                    ) {
+                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                            Text("Ajouter un poste", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+                            if(empty) Text("Vous devez remplir toutes les informations", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color(0xffb70007))
+                            Box(contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .padding(horizontal = 5.dp)
+                                    .shadow(2.dp, RoundedCornerShape(20.dp))
+                                    .background(Color(0xff0073FF))
+                                    .clickable {
+                                        if(
+                                            poste.Numero!=""&&
+                                            poste.Designation!=""&&
+                                            poste.Nature!=""&&
+                                            poste.District!=""
+                                        )
+                                        {
+                                            window.isEnabled=true
+                                            addPoste = false
+
+                                        }
+                                        else empty=true
+                                    }
+                            ) {
+                                Text(
+                                    "Créer",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            DropDown(
+                                listOf("El Harrach","Rouiba"),
+                                "District",
+                                {text,_ ->
+                                    poste.District=text
+                                },
+                                true,
+                                Modifier.fillMaxWidth(.3f)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EmptyTextField(
+                                "Numero",
+                                "",
+                                10,
+                                {
+                                    poste.Numero=it
+                                },
+                                Modifier.fillMaxWidth(.5f)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            DropDown(
+                                listOf("NP"),
+                                "Nature",
+                                {text,_ ->
+                                    poste.Nature=text
+                                },
+                                true,
+                                Modifier.fillMaxWidth()
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
+                        ) {
+                            EmptyTextField(
+                                "Addresse poste",
+                                "",
+                                10,
+                                {
+                                    poste.Designation=it
+                                },
+                                Modifier.fillMaxWidth()
+                            )
+
+                        }
+                        EmptyTextField(
+                            "Commune",
+                            "",
+                            10,
+                            {
+                                poste.Designation=it
+                            },
+                            Modifier.fillMaxWidth().padding(top = 30.dp)
+                        )
+                    }
+                    VerticalScrollbar(adapter = rememberScrollbarAdapter(scrollState))
                 }
             }
         }
