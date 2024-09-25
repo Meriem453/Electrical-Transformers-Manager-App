@@ -384,7 +384,7 @@ fun Districts(window: ComposeWindow) {
                             {
                                 currentPoste!!.Numero=it
                             },
-                            Modifier.fillMaxWidth(.5f)
+                            Modifier.fillMaxWidth()
                         )
                     }
 

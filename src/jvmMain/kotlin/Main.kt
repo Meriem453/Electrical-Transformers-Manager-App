@@ -126,13 +126,13 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                             selectedItem=2
                         }
                         1 -> Mouvements(window,transfoHistory)
-                        2-> DD()
+                        2-> DD(window)
                         3 -> Districts(window)
                         4 -> Postes(window)
                         5 -> Comptes(window)
-                        6->  Reforme()
-                        7->  Sortie_d_actif()
-                        8->  References()
+                        6->  Sortie_d_actif()
+                        7->  Reforme(window)
+                        8->  References(window)
                     }
                 }
             }

@@ -22,7 +22,7 @@ fun CheckGrp(
     Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
             checked = isChecked,
-            onCheckedChange = {if (it) onChecked()},
+            onCheckedChange = { onChecked()},
             colors = CheckboxDefaults.colors(
                 checkedColor = Color(0xff0073FF),
                 checkmarkColor = Color.White,
