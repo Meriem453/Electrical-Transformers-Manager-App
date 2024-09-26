@@ -1,4 +1,5 @@
 package Screens
+import Auth
 import Models.Transformateur
 import Screens.Components.*
 import VIewModels.TransfoVM
@@ -151,9 +152,15 @@ CheckGrp(
             .background(Color.White)
             .horizontalScroll(horizontal_state)
     ) {
-        val list= listOf(
-            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition","Lieu","District","Addresse","Commune","N° Poste","Fiche garantie","PV d'éssaie","Plaque signalitique","",""
+        var list= listOf(
+            "DD","District","Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition","Id bien","Lieu","Addresse","Commune","N° Poste","Fiche garantie","PV d'éssaie","Plaque signalitique"
         )
+        if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda"){
+            list = list + "Utilisateur"
+        }
+        if(Auth.currentUser!!.role=="Gestionnaire de transformateurs" ){
+            list = list + "" + ""
+        }
 
         Row(modifier = Modifier.fillMaxWidth()){
 list.forEachIndexed{position,item->
@@ -180,26 +187,29 @@ list.forEachIndexed{position,item->
                 ) {
                 Text(
                     when(position){
-                        0->transfo.marque
-                        1-> transfo.n_serie
-                        2->transfo.tension
-                        3->transfo.puissance
-                        4->transfo.a_fabrication
-                        5->transfo.fournisseur
-                        6->"Lieu"
-                        7->"100000 DA"
-                        8->"EL Harrach"
-                        9->"Boumaati"
-                        10->"zert"
-                        11->"1234698"
-                        12->transfo.fiche_garantie
-                        13->transfo.pv_d_essaie
-                        14->transfo.plaque_signalitique
+                        0->"El Harrach"
+                        1->"Rouiba"
+                        2->transfo.marque
+                        3-> transfo.n_serie
+                        4->transfo.tension
+                        5->transfo.puissance
+                        6->transfo.a_fabrication
+                        7->transfo.fournisseur
+                        8->"100000 DA"
+                        9->"1245369"
+                        10->"Lieu"
+                        11->"Boumaati"
+                        12->"zert"
+                        13->"1234698"
+                        14->transfo.fiche_garantie
+                        15->transfo.pv_d_essaie
+                        16->transfo.plaque_signalitique
+                        17->if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda")"Bourmad" else ""
                         else ->""
                                     }
                     , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                 )
-                if(position==15){
+                if(position==17 && Auth.currentUser!!.role=="Gestionnaire de transformateurs"){
                     Row (verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
@@ -215,7 +225,7 @@ list.forEachIndexed{position,item->
                         Text("Modifier", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.White, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
                     }
                 }
-                    if(position==16){
+                    if(position==18){
                         Row (verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(20.dp))
@@ -343,11 +353,31 @@ list.forEachIndexed{position,item->
                }
                Spacer(modifier = Modifier.height(20.dp))
                EmptyTextField(
+                   "Prix d'aquisition",
+                   "",
+                   4,
+                   {
+
+                   },
+                   Modifier
+               )
+               Spacer(modifier = Modifier.height(20.dp))
+               EmptyTextField(
                    "Fournisseur",
                    currentTransfo?.fournisseur?:"",
                    30,
                    {
                        currentTransfo?.fournisseur=it
+
+                   },
+                   Modifier.fillMaxWidth()
+               )
+               Spacer(modifier = Modifier.height(20.dp))
+               EmptyTextField(
+                   "Id bien",
+                   "123459",
+                   30,
+                   {
 
                    },
                    Modifier.fillMaxWidth()
@@ -505,6 +535,17 @@ list.forEachIndexed{position,item->
                         Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+                    EmptyTextField(
+                        "Id bien",
+                        "123459",
+                        30,
+                        {
+
+                        },
+                        Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+
 
                     var fiche_garantie by remember { mutableStateOf(transfo.fiche_garantie) }
                     transfo.fiche_garantie=fiche_garantie
@@ -625,6 +666,48 @@ list.forEachIndexed{position,item->
                             {transfo.a_fabrication=it},
                             Modifier
                         )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    EmptyTextField(
+                        "Prix d'aquisition",
+                        "",
+                        4,
+                        {
+
+                        },
+                        Modifier
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    EmptyTextField(
+                        "Id bien",
+                        "",
+                        4,
+                        {
+
+                        },
+                        Modifier
+                    )
+                    if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda"){
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            EmptyTextField(
+                                "DD",
+                                "",
+                                10,
+                                {},
+                                Modifier.padding(end = 10.dp)
+                            )
+                            EmptyTextField(
+                                "Utilisateur",
+                                "",
+                                10,
+                                {},
+                                Modifier.padding(end = 10.dp)
+                            )
+
+                        }
                     }
                     Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)){
                         DropDown(

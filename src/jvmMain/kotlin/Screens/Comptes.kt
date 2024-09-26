@@ -1,5 +1,6 @@
 package Screens
 
+import Auth
 import Models.Compte
 import Screens.Components.*
 import VIewModels.ComptesVM
@@ -48,18 +49,22 @@ fun Comptes(window: ComposeWindow) {
             Refresh {
                 vm.getAllComptes()
             }
-            Button(
-                icon = "icons/add.svg",
-                text = "Nouveau",
-                tintColor = Color.White,
-                background = Color(0xff0073FF),
-                {window.isEnabled=false
-                    addAccount=true}
-            )
+
+            if(Auth.currentUser!!.role=="Admin") {
+                Button(
+                    icon = "icons/add.svg",
+                    text = "Nouveau",
+                    tintColor = Color.White,
+                    background = Color(0xff0073FF),
+                    {
+                        window.isEnabled = false
+                        addAccount = true
+                    }
+                )
+            }
         }
 
         val vertical_state= rememberScrollState()
-        var hoveredDistPos:Int? by remember { mutableStateOf(null) }
 
         Column(
             modifier = Modifier
@@ -76,23 +81,8 @@ fun Comptes(window: ComposeWindow) {
                     Column {
                         if(item!=null)Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))else Box(Modifier.height(57.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
-                            var hover by remember { mutableStateOf(false) }
                             vm.filteredComptes.forEachIndexed{pos, compte->
-                                Box(modifier = Modifier .background(
-                                    if(pos==hoveredDistPos) Color(0xffE5F1FF) else Color.White
-                                ).onPointerEvent(
-                                    PointerEventType.Enter,
-                                    onEvent = {
-                                        hover = true
-                                        hoveredDistPos = pos
-                                    },
-                                ).onPointerEvent(
-                                    PointerEventType.Exit,
-                                    onEvent = {
-                                        hover = false
-                                        hoveredDistPos = null
-
-                                    })) {
+                                Box(modifier = Modifier , contentAlignment = Alignment.Center) {
                                     Text(
                                         when(position){
                                             0->compte.District
@@ -106,7 +96,7 @@ fun Comptes(window: ComposeWindow) {
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
-                                    if(item==null) Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(11.dp))
+                                    if(item==null && Auth.currentUser!!.role=="Admin") Icon(painterResource("icons/delete.svg"),"", tint = Color.Gray)
                                 }
                             }
                         }
@@ -175,14 +165,14 @@ fun Comptes(window: ComposeWindow) {
                         modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        EmptyTextField(
-                            "District",
-                            "",
-                            10,
-                            {
-                            compte.District=it
+                        DropDown(
+                            listOf("El harrach"),
+                            "DD",
+                            {text,_ ->
+                                compte.District=text
                             },
-                            Modifier.fillMaxWidth(.3f)
+                            true,
+                            Modifier
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         EmptyTextField(
@@ -264,3 +254,4 @@ fun Comptes(window: ComposeWindow) {
             }
         }
     }
+

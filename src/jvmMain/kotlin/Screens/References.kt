@@ -46,14 +46,16 @@ Row (
     ) {
     Row(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween) {
         Text("Marque", fontSize = 26.sp)
-        Button(
-            icon = "icons/add.svg",
-            text = "Nouvel",
-            tintColor = Color.White,
-            background = Color(0xff0073FF)
-        ) {
-            window.isEnabled=false
-            addMarque=true
+        if(Auth.currentUser!!.role=="Admin") {
+            Button(
+                icon = "icons/add.svg",
+                text = "Nouvel",
+                tintColor = Color.White,
+                background = Color(0xff0073FF)
+            ) {
+                window.isEnabled = false
+                addMarque = true
+            }
         }
     }
 
@@ -64,7 +66,7 @@ Row (
             itemsIndexed(listOf("Al Suweidi","EI")){pos,item->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(item, fontSize = 16.sp, modifier = Modifier.weight(1f).padding(vertical = 10.dp))
-                    Icon(painter = painterResource("icons/delete.svg"),"", tint = Color.Gray)
+                    if(Auth.currentUser!!.role=="Admin") Icon(painter = painterResource("icons/delete.svg"),"", tint = Color.Gray)
                 }
 
             }
@@ -80,14 +82,16 @@ Row (
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             Text("Tension", fontSize = 26.sp)
-            Button(
-                icon = "icons/add.svg",
-                text = "Nouvel",
-                tintColor = Color.White,
-                background = Color(0xff0073FF)
-            ) {
-                window.isEnabled=false
-                addTension=true
+            if(Auth.currentUser!!.role=="Admin") {
+                Button(
+                    icon = "icons/add.svg",
+                    text = "Nouvel",
+                    tintColor = Color.White,
+                    background = Color(0xff0073FF)
+                ) {
+                    window.isEnabled = false
+                    addTension = true
+                }
             }
         }
 
@@ -98,7 +102,7 @@ Row (
             itemsIndexed(listOf("1220","2005")){pos,item->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(item, fontSize = 16.sp, modifier = Modifier.weight(1f).padding(vertical = 10.dp))
-                    Icon(painter = painterResource("icons/delete.svg"),"", tint = Color.Gray)
+                    if(Auth.currentUser!!.role=="Admin") Icon(painter = painterResource("icons/delete.svg"),"", tint = Color.Gray)
                 }
 
             }
@@ -114,14 +118,16 @@ Row (
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             Text("Puissance", fontSize = 26.sp)
-            Button(
-                icon = "icons/add.svg",
-                text = "Nouvel",
-                tintColor = Color.White,
-                background = Color(0xff0073FF)
-            ) {
-                window.isEnabled=false
-                addPuissance=true
+            if(Auth.currentUser!!.role=="Admin") {
+                Button(
+                    icon = "icons/add.svg",
+                    text = "Nouvel",
+                    tintColor = Color.White,
+                    background = Color(0xff0073FF)
+                ) {
+                    window.isEnabled = false
+                    addPuissance = true
+                }
             }
         }
 
@@ -132,7 +138,7 @@ Row (
             itemsIndexed(listOf("1254","1254")){pos,item->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(item, fontSize = 16.sp, modifier = Modifier.weight(1f).padding(vertical = 10.dp))
-                    Icon(painter = painterResource("icons/delete.svg"),"", tint = Color.Gray)
+                    if(Auth.currentUser!!.role=="Admin") Icon(painter = painterResource("icons/delete.svg"),"", tint = Color.Gray)
                 }
 
             }

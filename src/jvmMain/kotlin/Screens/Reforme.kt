@@ -1,5 +1,6 @@
 package Screens
 
+import Auth
 import Models.Transformateur
 import Screens.Components.*
 import androidx.compose.foundation.*
@@ -336,7 +337,7 @@ fun Propose(
             .background(Color.White)
     ) {
         val list= listOf(
-            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition",""
+            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition","Id bien",""
         )
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
@@ -363,11 +364,12 @@ fun Propose(
                                         4->transfo.a_fabrication
                                         5->transfo.fournisseur
                                         6->"1000000 DA"
+                                        7->"123456"
                                         else ->""
                                     }
                                     , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                 )
-                                if(position==7){
+                                if(position==8 && Auth.currentUser!!.role=="Gestionnaire de transformateurs"){
                                     var checkedTrn by remember { mutableStateOf(false) }
                                     CheckGrp(
                                         isChecked = checkedTrn ,
@@ -408,7 +410,7 @@ fun Reformes(
             .background(Color.White)
     ) {
         val list= listOf(
-            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition","Date de la reform","Numero de la résolution","Résolution CA",""
+            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition","Id bien","Date de la reform","Numero de la résolution","Résolution CA",""
         )
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
@@ -435,14 +437,15 @@ fun Reformes(
                                         4->transfo.a_fabrication
                                         5->transfo.fournisseur
                                         6->"1000000 DA"
-                                        7->"4/5/2024"
-                                        8->"1234560"
-                                        9->"pdf"
+                                        7->"123456"
+                                        8->"4/5/2024"
+                                        9->"1234560"
+                                        10->"pdf"
                                         else ->""
                                     }
                                     , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                 )
-                                if(position==10){
+                                if(position==11 && Auth.currentUser!!.role=="Gestionnaire de transformateurs"){
                                     var checkedTrn by remember { mutableStateOf(false) }
                                     CheckGrp(
                                         isChecked = checkedTrn ,

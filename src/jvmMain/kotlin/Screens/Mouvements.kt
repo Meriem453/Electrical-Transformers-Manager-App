@@ -34,14 +34,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-val list= listOf(
-    "N° Bon","Date mvt","Date saisie","Motif","Marque","N° série transfo",
-   // "Puissance","Tension","Année de fab","Fournisseur",
-    "Nature du mvt","Provenance","Destination","District","Poste","Bon mvt","Date bon",""
-)
+
+
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun Mouvements(window: ComposeWindow,transfo:String) {
+    var list= listOf(
+        "DD","District",
+        "N° Bon","Date mvt","Date saisie","Motif","Marque","N° série transfo",
+        // "Puissance","Tension","Année de fab","Fournisseur",
+        "Nature du mvt","Provenance","Destination","Poste","Bon mvt","Date bon"
+    )
+    if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda"){
+        list=list+"Utilisateur"
+    }
+    if(Auth.currentUser!!.role=="Gestionnaire de transformateurs" ){
+        list = list + "" + ""
+    }
     val vm = MouvmntVM
     var currentTransfo:Transformateur? by remember { mutableStateOf(null) }
     if(transfo!="") vm.filterMvt(Mouvement(n_serie_transfo = transfo),"","")
@@ -105,7 +114,6 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
 
         val horizontal_state= rememberScrollState()
         val vertical_state= rememberScrollState()
-        var hoveredTransfoPos:Int? by remember { mutableStateOf(null) }
 
         Column(
             modifier = Modifier
@@ -119,45 +127,34 @@ fun Mouvements(window: ComposeWindow,transfo:String) {
                     Column {
                         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
-                            var hover by remember { mutableStateOf(false) }
                             vm.filteredMvt.forEachIndexed{pos, mvt->
                                 Box(modifier = Modifier
-                                    .onPointerEvent(
-                                    PointerEventType.Enter,
-                                    onEvent = {
-                                        hover = true
-                                        hoveredTransfoPos = pos
-                                    },
-                                ).onPointerEvent(
-                                    PointerEventType.Exit,
-                                    onEvent = {
-                                        hover = false
-                                        hoveredTransfoPos = null
-
-                                    }).fillMaxWidth()
+                                    .fillMaxWidth()
                                , contentAlignment = Alignment.Center ) {
                                     Text(
                                         when(position){
-                                            0->mvt.n_bon
-                                            1-> mvt.date_mvt
-                                            2->mvt.date_saisie
-                                            3->mvt.motif
-                                            4->mvt.marque
-                                            5->mvt.n_serie_transfo
+                                            0->"El Harrach"
+                                            1->mvt.district
+                                            2->mvt.n_bon
+                                            3-> mvt.date_mvt
+                                            4->mvt.date_saisie
+                                            5->mvt.motif
+                                            6->mvt.marque
+                                            7->mvt.n_serie_transfo
 //                                            6->mvt.puissance
 //                                            7->mvt.tension
-                                            6->mvt.annee_de_fab
-                                            7->mvt.fournisseur
-                                            8->mvt.destination
-                                            9->mvt.district
-                                            10->mvt.poste
-                                            11->mvt.bon_mvt
-                                            12->mvt.date_bon
+                                            8->mvt.annee_de_fab
+                                            9->mvt.fournisseur
+                                            10->mvt.destination
+                                            11->mvt.poste
+                                            12->mvt.bon_mvt
+                                            13->mvt.date_bon
+                                            14->if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda")"Bourmad" else ""
                                             else ->""
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
-                                    if(position==13){
+                                    if(position==14 && Auth.currentUser!!.role=="Gestionnaire de transformateurs"){
                                         Row (verticalAlignment = Alignment.CenterVertically,
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(20.dp))

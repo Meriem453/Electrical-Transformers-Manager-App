@@ -61,6 +61,7 @@ fun Sortie_d_actif() {
                 "A. fabrication",
                 "Fournisseur",
                 "Prix d'aquisition",
+                "Id bien",
                 "Date du reforme",
                 "Date du vente",
                 "Résolution CA",
@@ -85,10 +86,11 @@ fun Sortie_d_actif() {
                                             4 -> transfo.a_fabrication
                                             5 -> transfo.fournisseur
                                             6 -> "100000 DA"
-                                            7 -> "4/5/2024"
+                                            7->"123456"
                                             8 -> "4/5/2024"
-                                            9 -> "zerty.pdf"
+                                            9 -> "4/5/2024"
                                             10 -> "zerty.pdf"
+                                            11 -> "zerty.pdf"
                                             else -> ""
                                         }, fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )

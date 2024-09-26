@@ -64,7 +64,8 @@ Column {
             unfocusedIndicatorColor = Color.Gray,
             focusedLabelColor = Theme.MAIN_BLUE,
             unfocusedLabelColor = Color.Gray
-        )
+        ),
+        maxLines = 1
     )
     Spacer(modifier = Modifier.height(50.dp))
     OutlinedTextField(
@@ -82,7 +83,8 @@ Column {
             unfocusedIndicatorColor = Color.Gray,
             focusedLabelColor = Theme.MAIN_BLUE,
             unfocusedLabelColor = Color.Gray
-        )
+        ),
+        maxLines = 1
     )
 }
 

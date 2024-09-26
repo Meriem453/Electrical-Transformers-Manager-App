@@ -32,15 +32,16 @@ data class Item(
 )
 
 val items= listOf(
-    Item("Transfomateurs","icons/flash_on.svg","ifjisnhvgivnrnvb"),
-    Item("Mouvements","icons/compare_arrows.svg",""),
-    Item("DD","icons/compare_arrows.svg",""),
+    Item("DD","icons/account_balance.svg",""),
     Item("Districts","icons/account_balance.svg",""),
-    Item("Postes","icons/charging_station.svg",""),
+    Item("Références","icons/bookmark_border.svg",""),
     Item("Comptes","icons/people_alt.svg",""),
+    Item("Transfomateurs","icons/transfo.svg","ifjisnhvgivnrnvb"),
+    Item("Mouvements","icons/compare_arrows.svg",""),
+    Item("Postes","icons/flash_on.svg",""),
     Item("Sortie d'actif","icons/restore_from_trash.svg",""),
-    Item("Réforme","icons/people_alt.svg",""),
-    Item("Références","icons/people_alt.svg","")
+    Item("Réforme","icons/attach_money.svg",""),
+
 
 )
 @Composable
@@ -63,7 +64,7 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
             }) {
                 items.forEachIndexed { index, item ->
 
-                    if(Auth.currentUser!!.role=="Admin" || (index!=3 && index!=5 && index!=8 && index!=2))
+                    if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda" || (index!=0 && index!=1 && index!=2 && index!=3))
                     NavigationRailItem(
                         label = {
                             Text(
@@ -78,7 +79,7 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                         icon = {
                             Icon(
                                 painter = painterResource(item.icon), "",
-                                tint = if (selectedItem == index) Color.White else Color.Black
+                                tint = if (selectedItem == index) Color.White else Color.Black,
                             )
                         },
                         selected = selectedItem == index,
@@ -121,18 +122,18 @@ fun App(window: ComposeWindow,Logout:()->Unit) {
                 Box(modifier = Modifier.fillMaxSize().padding(top = 20.dp)) {
                     var transfoHistory by remember{mutableStateOf("")}
                     when (selectedItem) {
-                        0 -> Transfo(window){
+                        0-> DD(window)
+                        1-> Districts(window)
+                        2-> References(window)
+                        3-> Comptes(window)
+                        4-> Transfo(window){
                             transfoHistory=it
-                            selectedItem=2
+                            selectedItem=5
                         }
-                        1 -> Mouvements(window,transfoHistory)
-                        2-> DD(window)
-                        3 -> Districts(window)
-                        4 -> Postes(window)
-                        5 -> Comptes(window)
-                        6->  Sortie_d_actif()
-                        7->  Reforme(window)
-                        8->  References(window)
+                        5-> Mouvements(window,transfoHistory)
+                        6-> Postes(window)
+                        7-> Sortie_d_actif()
+                        8-> Reforme(window)
                     }
                 }
             }

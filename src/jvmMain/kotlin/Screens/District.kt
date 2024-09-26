@@ -36,6 +36,7 @@ fun Districts(window: ComposeWindow) {
     val vm = DistrictVM
 
     var addDistrict by remember { mutableStateOf(false) }
+    var currentDist:District? by remember { mutableStateOf(null) }
     var chanPoste by remember { mutableStateOf(false) }
     var currentPoste:Poste? by remember { mutableStateOf(null) }
 
@@ -53,6 +54,7 @@ fun Districts(window: ComposeWindow) {
             Refresh {
                 vm.getAllDistricts()
             }
+            if(Auth.currentUser!!.role=="Admin") {
                 Button(
                     icon = "icons/add.svg",
                     text = "Nouveau",
@@ -62,11 +64,12 @@ fun Districts(window: ComposeWindow) {
                         window.isEnabled = false
                         addDistrict = true
                     }
+
                 )
+            }
 
         }
         val vertical_state= rememberScrollState()
-        var hoveredDistPos:Int? by remember { mutableStateOf(null) }
 
         Column(
             modifier = Modifier
@@ -76,7 +79,7 @@ fun Districts(window: ComposeWindow) {
                 .fillMaxWidth()
         ) {
             val list= listOf(
-"Centre","District","Init","Code agence","Code centre"
+"DD","Nom","Code",""
             )
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
@@ -84,34 +87,38 @@ fun Districts(window: ComposeWindow) {
                     Column {
                         Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
-                            var hover by remember { mutableStateOf(false) }
-                            vm.filteredDistricts.forEachIndexed{pos, dist->
-                                Box(modifier = Modifier .background(
-                                    if(pos==hoveredDistPos) Color(0xffE5F1FF) else Color.White
-                                ).onPointerEvent(
-                                    PointerEventType.Enter,
-                                    onEvent = {
-                                        hover = true
-                                        hoveredDistPos = pos
-                                    },
-                                ).onPointerEvent(
-                                    PointerEventType.Exit,
-                                    onEvent = {
-                                        hover = false
-                                        hoveredDistPos = null
 
-                                    })) {
+                            vm.filteredDistricts.forEachIndexed{pos, dist->
+                                Box(modifier = Modifier,
+                                    contentAlignment = Alignment.Center
+                                    ) {
                                     Text(
                                         when(position){
                                             0->dist.centre
                                             1-> dist.district
                                             2->dist.init
-                                            3->dist.code_agence
-                                            4->dist.code_centre
+
                                             else ->""
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
-                                    )}
+                                    )
+//                                    if(position==3){
+//                                        Row (verticalAlignment = Alignment.CenterVertically,
+//                                            modifier = Modifier
+//                                                .clip(RoundedCornerShape(20.dp))
+//                                                .padding(horizontal = 5.dp)
+//                                                .shadow(2.dp, RoundedCornerShape(10.dp))
+//                                                .background(Color(0xff0073FF))
+//                                                .clickable {
+//                                                    currentDist=dist
+//                                                    window.isEnabled = false
+//                                                    addDistrict = true
+//                                                }
+//                                        ){
+//                                            Text("Modifier", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.White, modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp))
+//                                        }
+//                                    }
+                                }
                             }
                         }
                     }

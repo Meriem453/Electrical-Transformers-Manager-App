@@ -70,7 +70,6 @@ fun Postes(window: ComposeWindow) {
             )
         }
         val vertical_state= rememberScrollState()
-        var hoveredPostePos:Int? by remember { mutableStateOf(null) }
 
         Column(
             modifier = Modifier
@@ -79,46 +78,43 @@ fun Postes(window: ComposeWindow) {
                 .background(Color.White)
                 .fillMaxWidth()
         ) {
-            val list= listOf(
-                "District","Addresse","Commune","Numero","Nature","N° série transfo","Marque transfo",null
+            var list= listOf(
+                "DD","District","Addresse","Commune","Numero","Nature","N° série transfo","Marque transfo"
             )
-
+            if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda"){
+                list=list+"Utilisateur"
+            }
+            if(Auth.currentUser!!.role=="Gestionnaire de transformateurs" ){
+                list = list + ""
+            }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
                 list.forEachIndexed{position,item->
                     Column {
                        if(item!=null) Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp)) else if(Auth.currentUser!!.role=="Gestionnaire de transformateurs") Box(Modifier.height(57.dp))
                         Column(modifier = Modifier.verticalScroll(vertical_state)) {
-                            var hover by remember { mutableStateOf(false) }
-                            vm.filteredPostes.forEachIndexed{pos, poste->
-                                Box(modifier = Modifier .background(
-                                    if(pos==hoveredPostePos) Color(0xffE5F1FF) else Color.White
-                                ).onPointerEvent(
-                                    PointerEventType.Enter,
-                                    onEvent = {
-                                        hover = true
-                                        hoveredPostePos = pos
-                                    },
-                                ).onPointerEvent(
-                                    PointerEventType.Exit,
-                                    onEvent = {
-                                        hover = false
-                                        hoveredPostePos = null
 
-                                    })) {
+                            vm.filteredPostes.forEachIndexed{pos, poste->
+                                Box(contentAlignment = Alignment.Center) {
                                     Text(
                                         when(position){
-                                            0->poste.District
-                                            1-> poste.Designation
-                                            2->"Commune"
-                                            3->poste.Numero
-                                            4->poste.Nature
-                                            5->poste.n_serie_transfo
-                                            6->poste.marque_transfo
+                                            0->"El Harrach"
+                                            1->poste.District
+                                            2-> poste.Designation
+                                            3->"Commune"
+                                            4->poste.Numero
+                                            5->poste.Nature
+                                            6->poste.n_serie_transfo
+                                            7->poste.marque_transfo
+                                            8-> if(Auth.currentUser!!.role=="Admin" || Auth.currentUser!!.role=="Visiteur_rda")"Bourmad" else ""
                                             else ->""
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
-                                    if(item==null && Auth.currentUser!!.role=="Gestionnaire de transformateurs") Icon(painterResource("icons/delete.svg"),"", tint = Color(0xffb70007), modifier = Modifier.padding(11.dp))
+                                    if(item=="" && Auth.currentUser!!.role=="Gestionnaire de transformateurs") {
+                                        Box(modifier = Modifier.background(Color.White)) {
+                                            Icon(painterResource("icons/delete.svg"), "", tint = Color.Gray)
+                                        }
+                                    }
                                 }
                             }
                         }

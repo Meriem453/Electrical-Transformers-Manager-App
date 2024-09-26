@@ -38,17 +38,18 @@ fun DD(window: ComposeWindow){
     Column (modifier = Modifier.fillMaxSize()){
         if(Auth.currentUser!!.role=="Admin") {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+if(Auth.currentUser!!.role=="Admin") {
+    Button(
+        icon = "icons/add.svg",
+        text = "Nouveau",
+        tintColor = Color.White,
+        background = Color(0xff0073FF)
+    ) {
 
-                Button(
-                    icon = "icons/add.svg",
-                    text = "Nouveau",
-                    tintColor = Color.White,
-                    background = Color(0xff0073FF)
-                ) {
-
-                    addDD=true
-                    window.isEnabled = false
-                }
+        addDD = true
+        window.isEnabled = false
+    }
+}
             }
         }
 
@@ -81,7 +82,7 @@ fun DD(window: ComposeWindow){
                                         }
                                         , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                     )
-                                   if(position==2) {
+                                   if(position==2 && Auth.currentUser!!.role=="Admin") {
                                        Row (verticalAlignment = Alignment.CenterVertically,
                                            modifier = Modifier
                                                .clip(RoundedCornerShape(20.dp))
