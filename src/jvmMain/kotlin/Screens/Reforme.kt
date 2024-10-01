@@ -32,7 +32,7 @@ fun Reforme(window:ComposeWindow){
         mutableStateOf(false)
     }
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxSize()
     ) {
         var checkedItem by remember {
             mutableStateOf(0)
@@ -401,60 +401,73 @@ fun Reformes(
 ){
     val vertical_state= rememberScrollState()
     val venduList by remember { mutableStateOf(ArrayList<Transformateur>()) }
-
+    val horizontal_scroll = rememberScrollState()
+Column (modifier = Modifier.fillMaxSize()) {
 
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
-            .fillMaxSize()
+            .fillMaxWidth()
+            .weight(1f)
             .background(Color.White)
+            .horizontalScroll(horizontal_scroll)
     ) {
-        val list= listOf(
-            "Marque","N° série","Tension","Puissance","A. fabrication","Fournisseur","Prix d'aquisition","Id bien","Date de la reform","Numero de la résolution","Résolution CA",""
+        val list = listOf(
+            "Marque",
+            "N° série",
+            "Tension",
+            "Puissance",
+            "A. fabrication",
+            "Fournisseur",
+            "Prix d'aquisition",
+            "Id bien",
+            "Date de la reform",
+            "Numero de la résolution",
+            "Résolution CA",
+            ""
         )
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
-            list.forEachIndexed{position,item->
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            list.forEachIndexed { position, item ->
                 Column {
                     Text(item, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
                     Column(modifier = Modifier.verticalScroll(vertical_state)) {
                         listOf(
-                            Transformateur("EI","123456","1000","1000","2003","qsdfghjk",),
-                            Transformateur("EI","123456","1000","1000","2003","qsdfghjk",),
-                            Transformateur("EI","123456","1000","1000","2003","qsdfghjk",),
-                            Transformateur("EI","123456","1000","1000","2003","qsdfghjk",),
-                            Transformateur("EI","123456","1000","1000","2003","qsdfghjk",),
-                        ).forEachIndexed{ pos, transfo->
-                            Box(contentAlignment = Alignment.Center, modifier = Modifier
+                            Transformateur("EI", "123456", "1000", "1000", "2003", "qsdfghjk",),
+                            Transformateur("EI", "123456", "1000", "1000", "2003", "qsdfghjk",),
+                            Transformateur("EI", "123456", "1000", "1000", "2003", "qsdfghjk",),
+                            Transformateur("EI", "123456", "1000", "1000", "2003", "qsdfghjk",),
+                            Transformateur("EI", "123456", "1000", "1000", "2003", "qsdfghjk",),
+                        ).forEachIndexed { pos, transfo ->
+                            Box(
+                                contentAlignment = Alignment.Center, modifier = Modifier
 
                             ) {
                                 Text(
-                                    when(position){
-                                        0->transfo.marque
-                                        1-> transfo.n_serie
-                                        2->transfo.tension
-                                        3->transfo.puissance
-                                        4->transfo.a_fabrication
-                                        5->transfo.fournisseur
-                                        6->"1000000 DA"
-                                        7->"123456"
-                                        8->"4/5/2024"
-                                        9->"1234560"
-                                        10->"pdf"
-                                        else ->""
-                                    }
-                                    , fontSize = 15.sp, modifier = Modifier.padding(20.dp)
+                                    when (position) {
+                                        0 -> transfo.marque
+                                        1 -> transfo.n_serie
+                                        2 -> transfo.tension
+                                        3 -> transfo.puissance
+                                        4 -> transfo.a_fabrication
+                                        5 -> transfo.fournisseur
+                                        6 -> "1000000 DA"
+                                        7 -> "123456"
+                                        8 -> "4/5/2024"
+                                        9 -> "1234560"
+                                        10 -> "pdf"
+                                        else -> ""
+                                    }, fontSize = 15.sp, modifier = Modifier.padding(20.dp)
                                 )
-                                if(position==11 && Auth.currentUser!!.role=="Gestionnaire de transformateurs"){
+                                if (position == 11 && Auth.currentUser!!.role == "Gestionnaire de transformateurs") {
                                     var checkedTrn by remember { mutableStateOf(false) }
                                     CheckGrp(
-                                        isChecked = checkedTrn ,
+                                        isChecked = checkedTrn,
                                         onChecked = {
                                             checkedTrn = !checkedTrn
-                                            if(checkedTrn){
+                                            if (checkedTrn) {
                                                 venduList.add(transfo)
-                                            }
-                                            else{
+                                            } else {
                                                 venduList.remove(transfo)
                                             }
                                             isVenteVisible(venduList)
@@ -469,5 +482,8 @@ fun Reformes(
                 }
             }
         }
+
     }
+    HorizontalScrollbar(rememberScrollbarAdapter(horizontal_scroll))
+}
 }

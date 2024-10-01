@@ -9,7 +9,7 @@ plugins {
 group = "com.example"
 version = "1.0-SNAPSHOT"
 
-repositories {21
+repositories {
     google()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
@@ -17,7 +17,7 @@ repositories {21
 
 kotlin {
     jvm {
-        jvmToolchain(11)
+        jvmToolchain(17)
         withJava()
     }
     sourceSets {
@@ -42,7 +42,7 @@ compose.desktop {
                 // a version only for the exe package
                 exePackageVersion = "1.0.0"
 
-                iconFile.set(project.file("src/jvmMain/resources/images/sonelgaz_logo.ico"))
+  //              iconFile.set(project.file("src/jvmMain/resources/images/sonelgaz_logo.ico"))
                 packageName = "Sonelgaz"
                 packageVersion = "1.0.0"
                 description = "Transfo management"
